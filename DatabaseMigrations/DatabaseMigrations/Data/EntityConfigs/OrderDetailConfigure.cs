@@ -16,18 +16,13 @@ namespace CodeFirst.EntityConfigs
             builder.ToTable("OrderDetails");
             builder.HasKey(k => k.OrderDetailId);
 
-            builder.Property(p => p.OrderDetailId).HasColumnName("OrderDetailId").IsRequired(true);
+            builder.Property(p => p.OrderDetailId).HasColumnName("OrderDetailId").IsRequired(true).ValueGeneratedOnAdd();
             builder.Property(p => p.OrderId).HasColumnName("OrderId").IsRequired(true);
             builder.Property(p => p.ProductId).HasColumnName("ProductId").IsRequired(true);
             builder.Property(p => p.OrderNumber).HasColumnName("OrderNumber").IsRequired(true).ValueGeneratedOnAdd();
             builder.Property(p => p.Price).HasColumnName("Price").IsRequired(true);
-            builder.Property(p => p.Quantify).HasColumnName("Quantity").IsRequired(true);
             builder.Property(p => p.Discount).HasColumnName("Discount").IsRequired(true);
             builder.Property(p => p.Total).HasColumnName("Total").IsRequired(true);
-            builder.Property(p => p.IdSKU).HasColumnName("IdSKU").IsRequired(true);
-            builder.Property(p => p.Size).HasColumnName("Size").IsRequired(true);
-            builder.Property(p => p.Color).HasColumnName("Color").IsRequired(true);
-            builder.Property(p => p.Fulfilled).HasColumnName("Fulfilled").IsRequired(true);
             builder.Property(p => p.ShipDate).HasColumnName("ShipDate").IsRequired(true);
             builder.Property(p => p.BillDate).HasColumnName("BillDate").IsRequired(true);
 

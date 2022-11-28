@@ -5,24 +5,53 @@ using System.Text;
 using System.Threading.Tasks;
 using CodeFirst.Entities;
 using DatabaseMigrations.Repositories.Abstractions;
+using DatabaseMigrations.Services.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseMigrations.Repositories
 {
     public class OrderDetaisRepository : IOrderDetailsRepository
     {
-        public Task<string> AddOrderDetailsAsync(decimal price, float discount)
+        private readonly ApplicationDbContext _dbContext;
+
+        public OrderDetaisRepository(IDbContextWrapper<ApplicationDbContext> wrapper)
         {
-            throw new NotImplementedException();
+            _dbContext = wrapper.DbContext;
         }
 
-        public Task<bool> DeleteOrderDetailsAsync()
+        public async Task<string> AddOrderDetailsAsync(decimal price, float discount, OrderEntity details, ProductEntity product)
         {
-            throw new NotImplementedException();
+            var orderDetail = new OrderDetailEntity()
+            {
+                OrderDetailId = Guid.NewGuid().ToString(),
+                Price = price,
+                Discount = discount,
+                ProductId = product.ProductId,
+                OrderId = details.OrderId,
+            };
+
+            await _dbContext.AddAsync(orderDetail);
+            await _dbContext.SaveChangesAsync();
+
+            return orderDetail.OrderDetailId;
         }
 
-        public Task<OrderDetailEntity?> GetOrderDetailByIdAsync(string id)
+        public async Task<bool> DeleteOrderDetailsAsync(string detailId)
         {
-            throw new NotImplementedException();
+            var details = await _dbContext.OrderDetails.FirstOrDefaultAsync(f => f.OrderDetailId == detailId);
+            if (details == null)
+            {
+                return false;
+            }
+
+            _dbContext.Remove(details);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<OrderDetailEntity?> GetOrderDetailByIdAsync(string id)
+        {
+            return await _dbContext.OrderDetails.Include(i => i.Order).Include(i => i.Product).FirstOrDefaultAsync();
         }
 
         public Task<bool> UpdateOrderDetailsAsync(string id, OrderDetailEntity orderDetails)

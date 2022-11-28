@@ -16,7 +16,7 @@ namespace CodeFirst.EntityConfigs
             builder.ToTable("Category");
             builder.HasKey(k => k.CategoryId);
 
-            builder.Property(p => p.CategoryId).HasColumnName("CategoryId").IsRequired(true);
+            builder.Property(p => p.CategoryId).HasColumnName("CategoryId").IsRequired(true).ValueGeneratedOnAdd();
             builder.Property(p => p.CategoryName).HasColumnName("CategoryName").IsRequired(true);
             builder.Property(p => p.Discription).HasColumnName("Discription").IsRequired(false);
             builder.Property(p => p.Picture).HasColumnName("Picture").IsRequired(false);

@@ -8,7 +8,7 @@ namespace CodeFirst.Entities
 {
     public class CategoryEntity
     {
-        public string CategoryId { get; set; } = string.Empty;
+        public int CategoryId { get; set; }
         public string? CategoryName { get; set; }
         public string? Discription { get; set; }
         public byte[] Picture { get; set; } = new byte[0];

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,11 @@ namespace DatabaseMigrations.Repositories
         public Task<bool> UpdateProductAsync(string id, ProductEntity payment)
         {
             throw new NotImplementedException();
+        }
+
+        // получить список категорий в которых находится продукт
+        public async Task<List<CategoryEntity>> GetCategoryListAsync(ProductEntity product)
+        {
         }
     }
 }

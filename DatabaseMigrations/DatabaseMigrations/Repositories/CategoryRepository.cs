@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CodeFirst.Entities;
 using DatabaseMigrations.Repositories.Abstractions;
@@ -18,11 +19,10 @@ namespace DatabaseMigrations.Repositories
             _dbContext = context.DbContext;
         }
 
-        public async Task<string> AddCategoryAsync(string categoryName, string discription, bool isActive = false)
+        public async Task<int> AddCategoryAsync(string categoryName, string discription, bool isActive = false)
         {
             var category = new CategoryEntity()
             {
-                CategoryId = Guid.NewGuid().ToString(),
                 CategoryName = categoryName,
                 Discription = discription,
                 Active = isActive
@@ -34,24 +34,62 @@ namespace DatabaseMigrations.Repositories
             return category.CategoryId;
         }
 
-        public Task<bool> DeleteCategoryByIdAsync(string categoryId)
+        public async Task<bool> DeleteCategoryByIdAsync(int categoryId)
         {
-            throw new NotImplementedException();
+            var category = await _dbContext.Categoryes.FirstOrDefaultAsync(f => f.CategoryId == categoryId);
+            if (category == null)
+            {
+                return false;
+            }
+
+            _dbContext.Remove(category);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<CategoryEntity?> GetCategoryByIdAsync(string id)
+        public async Task<CategoryEntity?> GetCategoryByIdAsync(int categoryId)
         {
-            return await _dbContext.Categoryes.FirstOrDefaultAsync(f_or_d => f_or_d.CategoryId == id);
+            return await _dbContext.Categoryes.Include(i => i.ProductsList).FirstOrDefaultAsync(f => f.CategoryId == categoryId);
         }
 
-        public Task<CategoryEntity?> GetCategoryByNameAsync(string categoryName)
+        public async Task<CategoryEntity?> GetCategoryByNameAsync(string categoryName)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Categoryes.Include(i => i.ProductsList).FirstOrDefaultAsync(f => f.CategoryName == categoryName);
         }
 
-        public Task<bool> UpdateCategoryByIdAsync(string categoryId, CategoryEntity newCategory)
+        public async Task<bool> UpdateCategoryByIdAsync(int categoryId, CategoryEntity newCategory)
         {
-            throw new NotImplementedException();
+            var category = await _dbContext.Categoryes.Include(i => i.ProductsList).FirstOrDefaultAsync(f => f.CategoryId == categoryId);
+            if (category == null)
+            {
+                return false;
+            }
+
+            _dbContext.Update(UpdateCategory(category, newCategory));
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        private CategoryEntity UpdateCategory(CategoryEntity oldCategory, CategoryEntity newCategory)
+        {
+            oldCategory.CategoryName = newCategory?.CategoryName;
+            oldCategory.Discription = newCategory?.Discription;
+            if (newCategory?.ProductsList != null)
+            {
+                oldCategory.ProductsList = newCategory.ProductsList;
+            }
+
+            if (oldCategory.Picture.Length == 0 && newCategory?.Picture.Length > 0)
+            {
+                oldCategory.Picture = newCategory.Picture;
+            }
+
+            if (newCategory != null && oldCategory.Active != newCategory.Active)
+            {
+                oldCategory.Active = newCategory.Active;
+            }
+
+            return oldCategory;
         }
     }
 }

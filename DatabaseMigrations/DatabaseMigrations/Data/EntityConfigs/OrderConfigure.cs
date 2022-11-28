@@ -24,14 +24,7 @@ namespace CodeFirst.EntityConfigs
             builder.Property(p => p.ShipDate).HasColumnName("ShipData").IsRequired(true);
             builder.Property(p => p.RequiredDate).HasColumnName("RequiredDate").IsRequired(true);
             builder.Property(p => p.ShipperId).HasColumnName("ShipperId").IsRequired(true);
-            builder.Property(p => p.Freight).HasColumnName("Freight").IsRequired(true);
-            builder.Property(p => p.SalesTax).HasColumnName("SalesTax").IsRequired(true);
-            builder.Property(p => p.TimeStamp).HasColumnName("TimeStamp").IsRequired(true);
             builder.Property(p => p.TransactStatus).HasColumnName("Transact").IsRequired(true);
-            builder.Property(p => p.ErrLoc).HasColumnName("ErrLoc").IsRequired(true);
-            builder.Property(p => p.ErrMag).HasColumnName("ReeMag").IsRequired(true);
-            builder.Property(p => p.Fulfilled).HasColumnName("FullFilling").IsRequired(true);
-            builder.Property(p => p.Deleted).HasColumnName("Deleted").IsRequired(true);
             builder.Property(p => p.Paid).HasColumnName("Paid").IsRequired(true);
             builder.Property(p => p.PaymentDate).HasColumnName("PaymentDate").IsRequired(true);
 

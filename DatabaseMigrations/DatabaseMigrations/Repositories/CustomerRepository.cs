@@ -37,19 +37,54 @@ namespace DatabaseMigrations.Repositories
             return customer.CustomerId;
         }
 
-        public Task<bool> DeleteCustomerByIdAsync()
+        public async Task<bool> DeleteCustomerByIdAsync(string customerId)
         {
-            throw new NotImplementedException();
+            var customer = await _dbContext.Customers.FirstOrDefaultAsync(f => f.CustomerId == customerId);
+            if (customer == null)
+            {
+                return false;
+            }
+
+            _dbContext.Remove(customer);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<CustomerEntity?> GetCustomerByIdAsync(string id)
+        public async Task<CustomerEntity?> GetCustomerByIdAsync(string customerId)
         {
-            return await _dbContext.Customers.FirstOrDefaultAsync(f_or_d => f_or_d.CustomerId == id);
+            return await _dbContext.Customers.Include(i => i.OrderList).FirstOrDefaultAsync(f => f.CustomerId == customerId);
         }
 
-        public Task<bool> UpdateCustomerByIdAsync()
+        public async Task<IEnumerable<OrderEntity>?> GetCustomerOrders(string customerId)
         {
-            throw new NotImplementedException();
+            var customer = await _dbContext.Customers.Include(i => i.OrderList).FirstOrDefaultAsync(f => f.CustomerId == customerId);
+
+            return customer?.OrderList;
+        }
+
+        public async Task<bool> UpdateCustomerByIdAsync(string customerId, CustomerEntity newCustomerData)
+        {
+            var customer = await _dbContext.Customers.Include(i => i.OrderList).FirstOrDefaultAsync(f => f.CustomerId == customerId);
+            if (customer == null)
+            {
+                return false;
+            }
+
+            _dbContext.Customers.Update(UpdateCustomer(customer, newCustomerData));
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        private CustomerEntity UpdateCustomer(CustomerEntity oldData, CustomerEntity newData)
+        {
+            oldData.FirstName = newData?.FirstName;
+            oldData.LastName = newData?.LastName;
+            oldData.Address1 = newData?.Address1;
+            oldData.Phone = newData?.Phone;
+            oldData.Email = newData?.Email;
+            oldData.Password = newData?.Password;
+
+            return oldData;
         }
     }
 }

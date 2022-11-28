@@ -13,5 +13,7 @@ namespace DatabaseMigrations.Repositories.Abstractions
         public Task<ProductEntity?> GetProductByIdAsync(string id);
         public Task<bool> UpdateProductAsync(string id, ProductEntity payment);
         public Task<bool> DeleteProductAsync();
+        public Task<List<CategoryEntity>> GetCategoryList(ProductEntity product);
+
     }
 }

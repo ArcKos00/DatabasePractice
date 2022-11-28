@@ -25,14 +25,7 @@ namespace CodeFirst.Entities
         public DateTime ShipDate { get; set; }
 
         public DateTime RequiredDate { get; set; }
-        public string? Freight { get; set; }
-        public string? SalesTax { get; set; }
-        public string? TimeStamp { get; set; }
         public string? TransactStatus { get; set; }
-        public string? ErrLoc { get; set; }
-        public string? ErrMag { get; set; }
-        public bool Fulfilled { get; set; }
-        public bool Deleted { get; set; }
         public bool Paid { get; set; }
         public DateTime PaymentDate { get; set; }
     }

@@ -8,7 +8,7 @@ namespace CodeFirst.Entities
 {
     public class OrderDetailEntity
     {
-        public int OrderDetailId { get; set; }
+        public string OrderDetailId { get; set; } = string.Empty;
 
         public int OrderId { get; set; }
         public OrderEntity? Order { get; set; }
@@ -18,13 +18,8 @@ namespace CodeFirst.Entities
 
         public int OrderNumber { get; set; }
         public decimal Price { get; set; }
-        public string? Quantify { get; set; }
         public float Discount { get; set; }
         public decimal Total { get; set; }
-        public int IdSKU { get; set; }
-        public int Size { get; set; }
-        public string? Color { get; set; }
-        public bool Fulfilled { get; set; }
         public DateTime ShipDate { get; set; }
         public DateTime BillDate { get; set; }
     }
