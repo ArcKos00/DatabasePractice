@@ -20,6 +20,5 @@ namespace CodeFirst.Entities
         public decimal Price { get; set; }
         public float Discount { get; set; }
         public decimal Total { get; set; }
-        public DateTime ShipDate { get; set; }
     }
 }

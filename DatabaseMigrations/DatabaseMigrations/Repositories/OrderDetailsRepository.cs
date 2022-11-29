@@ -10,21 +10,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseMigrations.Repositories
 {
-    public class OrderDetaisRepository : IOrderDetailsRepository
+    public class OrderDetailsRepository : IOrderDetailsRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public OrderDetaisRepository(IDbContextWrapper<ApplicationDbContext> wrapper)
+        public OrderDetailsRepository(IDbContextWrapper<ApplicationDbContext> wrapper)
         {
             _dbContext = wrapper.DbContext;
         }
 
-        public async Task<int> AddOrderDetailsAsync(decimal price, float discount, OrderEntity details, ProductEntity product)
+        public async Task<int> AddOrderDetailsAsync(decimal price, float discount, decimal total, OrderEntity details, ProductEntity product)
         {
             var orderDetail = new OrderDetailEntity()
             {
                 Price = price,
                 Discount = discount,
+                Total = total,
+                OrderNumber = details.OrderNumber,
                 ProductId = product.ProductId,
                 OrderId = details.OrderId
             };

@@ -18,15 +18,16 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
-        public async Task<int> AddOrderAsync(int customerId, int shipperId, int payId, DateTime shipDate, List<OrderDetailEntity> orderDetails)
+        public async Task<int> AddOrderAsync(int customerId, int shipperId, int payId, int orderNumber, bool paid, List<OrderDetailEntity> orderDetails)
         {
             var order = await _dbContext.Orders.AddAsync(new OrderEntity()
             {
                 CustomerId = customerId,
                 OrderDate = DateTime.Now,
+                OrderNumber = orderNumber,
+                Paid = paid,
                 PaymentId = payId,
-                ShipperId = shipperId,
-                ShipDate = shipDate
+                ShipperId = shipperId
             });
 
             await _dbContext.OrderDetails.AddRangeAsync(orderDetails.Select(s => new OrderDetailEntity()
@@ -36,7 +37,6 @@ namespace DatabaseMigrations.Repositories
                 Price = s.Price,
                 Discount = s.Discount,
                 Total = s.Total,
-                ShipDate = s.ShipDate
             }));
 
             await _dbContext.SaveChangesAsync();

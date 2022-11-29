@@ -19,13 +19,15 @@ namespace DatabaseMigrations.Repositories
             _dbContext = context.DbContext;
         }
 
-        public async Task<int> AddCustomerAsync(string firstName, string secondName, string phone, string password)
+        public async Task<int> AddCustomerAsync(string address, string email, string firstName, string secondName, string phone, string password)
         {
             var customer = new CustomerEntity
             {
                 FirstName = firstName,
                 LastName = secondName,
+                Address1 = address,
                 Phone = phone,
+                Email = email,
                 Password = password,
                 DateEntered = DateTime.Now
             };

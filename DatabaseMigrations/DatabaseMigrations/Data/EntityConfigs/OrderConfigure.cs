@@ -22,9 +22,7 @@ namespace CodeFirst.EntityConfigs
             builder.Property(p => p.PaymentId).HasColumnName("PaymentId").IsRequired(true);
             builder.Property(p => p.OrderDate).HasColumnName("OrderDate").IsRequired(true);
             builder.Property(p => p.ShipperId).HasColumnName("ShipperId").IsRequired(true);
-            builder.Property(p => p.TransactStatus).HasColumnName("Transact").IsRequired(true);
             builder.Property(p => p.Paid).HasColumnName("Paid").IsRequired(true);
-            builder.Property(p => p.PaymentDate).HasColumnName("PaymentDate").IsRequired(true);
 
             builder.HasOne(o => o.Customer).WithMany(m => m.OrderList).HasForeignKey(k => k.CustomerId);
             builder.HasOne(o => o.Shipper).WithMany(m => m.OrderList).HasForeignKey(k => k.ShipperId);

@@ -9,7 +9,7 @@ namespace DatabaseMigrations.Services.Abstractions
 {
     public interface IOrderService
     {
-        public Task<int> AddOrderAsync(int customerId, List<OrderDetail> orderDetails, int shipperId, int payId, DateTime shipDate);
+        public Task<int> AddOrderAsync(int customerId, IEnumerable<OrderDetail> orderDetails, int shipperId, int payId, int orderNumber, bool paid);
         public Task<Order>? GetOrderASync(int id);
         public Task UpdateOrder(int id, Order order);
     }

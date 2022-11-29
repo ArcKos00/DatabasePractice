@@ -10,9 +10,15 @@ namespace DatabaseMigrations.Models
     {
         public int Id { get; set; }
         public string? ProductName { get; set; }
+        public string? ProductDescription { get; set; }
         public int CategoryId { get; set; }
+        public int Supplierid { get; set; }
         public decimal Price { get; set; }
         public float Discount { get; set; }
-        public Supplier? TheseSupplier { get; set; }
+        public bool Available { get; set; }
+        public int CurrentOrder { get; set; }
+        public Supplier Supplier { get; set; } = null!;
+        public Category Category { get; set; } = null!;
+        public IEnumerable<OrderDetail>? Details { get; set; }
     }
 }

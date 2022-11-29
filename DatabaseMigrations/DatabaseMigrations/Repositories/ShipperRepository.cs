@@ -28,16 +28,14 @@ namespace DatabaseMigrations.Repositories
 
             await _dbContext.Orders.AddRangeAsync(orders.Select(s => new OrderEntity()
             {
+                OrderId = s.OrderId,
                 CustomerId = s.CustomerId,
                 OrderNumber = s.OrderNumber,
                 Details = s.Details,
                 OrderDate = s.OrderDate,
                 PaymentId = s.PaymentId,
-                TransactStatus = s.TransactStatus,
                 Paid = s.Paid,
-                PaymentDate = s.PaymentDate,
                 ShipperId = entity.Entity.ShipperId,
-                ShipDate = s.ShipDate,
             }));
 
             await _dbContext.SaveChangesAsync();

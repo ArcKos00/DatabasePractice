@@ -26,19 +26,19 @@ namespace DatabaseMigrations.Services
             _logger = logger;
         }
 
-        public async Task<int> AddOrderAsync(int customerId, List<OrderDetail> orderDetails, int shipperId, int payId, DateTime shipDate)
+        public async Task<int> AddOrderAsync(int customerId, IEnumerable<OrderDetail> orderDetails, int shipperId, int payId, int orderNumber, bool paid)
         {
-            return await ExecuteSafeAsync(async () =>
+            return await ExecuteSafeAsync<int>(async () =>
             {
-                return await _orderRepository.AddOrderAsync(customerId, shipperId, payId, shipDate, orderDetails.Select(s => new OrderDetailEntity()
+                return await _orderRepository.AddOrderAsync(customerId, shipperId, payId, orderNumber, paid, orderDetails.Select(s => new OrderDetailEntity()
                 {
                     OrderDetailId = s.Id,
                     OrderId = s.Order!.Id,
                     ProductId = s.ProductInOrder!.Id,
+                    OrderNumber = s.OrderNumber,
                     Price = s.Price,
                     Discount = s.Discount,
                     Total = s.Total,
-                    ShipDate = shipDate,
                 }).ToList());
             });
         }
@@ -54,6 +54,7 @@ namespace DatabaseMigrations.Services
             return new Order()
             {
                 Id = result!.OrderId,
+                CustomerId = result!.CustomerId,
                 CustomerOrder = new Customer()
                 {
                     FirstName = result.Customer!.FirstName,
@@ -66,33 +67,37 @@ namespace DatabaseMigrations.Services
                 },
                 OrderNumber = result!.OrderNumber,
                 OrderDate = result!.OrderDate,
+                PaymentId = result!.PaymentId,
                 Payment = new Payment()
                 {
                     Id = result!.PaymentId,
                     Allowed = result.Paid
                 },
                 Paid = result!.Paid,
-                Details = (IEnumerable<OrderDetail>)result.Details
+                ShipperId = result!.ShipperId,
             };
         }
 
         public async Task UpdateOrder(int id, Order order)
         {
-            var result = await _orderRepository.UpdateOrderAsync(id, new OrderEntity()
+            await ExecuteSafeAsync(async () =>
             {
-                OrderId = order.Id,
-                CustomerId = order.CustomerOrder!.Id,
-                OrderNumber = order.OrderNumber,
-                OrderDate = order.OrderDate,
-                PaymentId = order.Payment!.Id,
-                Paid = order.Paid,
-                ShipperId = order.Shipper!.Id,
-            });
+                var result = await _orderRepository.UpdateOrderAsync(id, new OrderEntity()
+                {
+                    OrderId = order.Id,
+                    CustomerId = order.CustomerOrder!.Id,
+                    OrderNumber = order.OrderNumber,
+                    OrderDate = order.OrderDate,
+                    PaymentId = order.Payment!.Id,
+                    Paid = order.Paid,
+                    ShipperId = order.Shipper!.Id,
+                });
 
-            if (result == false)
-            {
-                _logger.LogError($"Cannot update Order {id}");
-            }
+                if (result == false)
+                {
+                    _logger.LogError($"Cannot update Order {id}");
+                }
+            });
         }
     }
 }

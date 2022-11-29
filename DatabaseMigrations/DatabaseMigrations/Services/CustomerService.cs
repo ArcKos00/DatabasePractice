@@ -30,11 +30,11 @@ namespace DatabaseMigrations.Services
             _logger = logger;
         }
 
-        public async Task<int> AddCustomerAsync(string firstName, string secondName, string phone, string password)
+        public async Task<int> AddCustomerAsync(string address, string email, string firstName, string secondName, string phone, string password)
         {
-            return await ExecuteSafeAsync(async () =>
+            return await ExecuteSafeAsync<int>(async () =>
             {
-                var result = await _customerRepository.AddCustomerAsync(firstName, secondName, phone, password);
+                var result = await _customerRepository.AddCustomerAsync(address, email, firstName, secondName, phone, password);
 
                 return result;
             });
@@ -55,14 +55,15 @@ namespace DatabaseMigrations.Services
                 FirstName = result.FirstName,
                 LastName = result.LastName,
                 Address = result.Address1,
+                Email = result.Email,
                 Phone = result.Phone,
+                DateEntry = result.DateEntered,
                 OrderList = result?.OrderList.Select(s => new Order()
                 {
                     Id = s.OrderId,
                     OrderNumber = s.OrderNumber,
                     OrderDate = s.OrderDate,
                     Paid = s.Paid,
-                    Details = (IEnumerable<OrderDetail>)s.Details
                 }),
             };
         }
@@ -91,11 +92,14 @@ namespace DatabaseMigrations.Services
 
         public async Task DeleteCustomer(int id)
         {
-            var result = await _customerRepository.DeleteCustomerByIdAsync(id);
-            if (result == false)
+            await ExecuteSafeAsync(async () =>
             {
-                _logger.LogError($"Cannot Delete Customer with id: {id}");
-            }
+                var result = await _customerRepository.DeleteCustomerByIdAsync(id);
+                if (result == false)
+                {
+                    _logger.LogError($"Cannot Delete Customer with id: {id}");
+                }
+            });
         }
     }
 }

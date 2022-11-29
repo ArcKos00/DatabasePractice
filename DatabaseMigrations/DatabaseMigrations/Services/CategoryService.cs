@@ -29,9 +29,10 @@ namespace DatabaseMigrations.Services
 
         public async Task<int> AddCategotyAsync(string categoryName, string discription, bool isActive = false)
         {
-            var id = await _categoryRepository.AddCategoryAsync(categoryName, discription, isActive);
-            _logger.LogInformation($"Created Category with id: {id}");
-            return id;
+            return await ExecuteSafeAsync<int>(async () =>
+            {
+                return await _categoryRepository.AddCategoryAsync(categoryName, discription, isActive);
+            });
         }
 
         public async Task<Category> GetCategoryAsync(int categoryId)
@@ -48,18 +49,13 @@ namespace DatabaseMigrations.Services
                 Id = result.CategoryId,
                 CategoryName = result.CategoryName,
                 Active = result.Active,
-
+                Discription = result.Discription,
                 Products = result.ProductsList.Select(s => new Product()
                 {
                     ProductName = s.ProductName,
                     CategoryId = s.CategoryId,
                     Price = s.UnitPrice,
                     Discount = s.Discount,
-                    TheseSupplier = new Supplier()
-                    {
-                        CompanyName = s.Supplier?.CompanyName,
-                        Phone = s.Supplier?.Phone
-                    }
                 })
             };
         }
@@ -84,11 +80,14 @@ namespace DatabaseMigrations.Services
 
         public async Task DeleteCategoryAsync(int id)
         {
-            var result = await _categoryRepository.DeleteCategoryByIdAsync(id);
-            if (result == false)
+            await ExecuteSafeAsync(async () =>
             {
-                _logger.LogError($"Failed to delete Category with id: {id}");
-            }
+                var result = await _categoryRepository.DeleteCategoryByIdAsync(id);
+                if (result == false)
+                {
+                    _logger.LogError($"Failed to delete Category with id: {id}");
+                }
+            });
         }
     }
 }

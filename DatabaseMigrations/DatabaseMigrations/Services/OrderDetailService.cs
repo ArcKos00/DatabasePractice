@@ -27,13 +27,14 @@ namespace DatabaseMigrations.Services
             _logger = logger;
         }
 
-        public async Task<int> AddOrderDetailsAsync(decimal price, float discount, Order order, Product product)
+        public async Task<int> AddOrderDetailsAsync(decimal price, float discount, decimal total, Order order, Product product)
         {
-            return await ExecuteSafeAsync(async () =>
+            return await ExecuteSafeAsync<int>(async () =>
             {
                 return await _orderDetailRepository.AddOrderDetailsAsync(
                 price,
                 discount,
+                total,
                 new OrderEntity()
                 {
                     OrderId = order.Id,
@@ -42,55 +43,72 @@ namespace DatabaseMigrations.Services
                     OrderDate = order.OrderDate,
                     PaymentId = order.Payment!.Id,
                     Paid = order.Paid,
+                    ShipperId = order.ShipperId,
                 },
                 new ProductEntity()
                 {
                     ProductId = product.Id,
                     ProductName = product.ProductName,
-                    SupplierId = product.TheseSupplier!.Id,
+                    ProductDiscription = product.ProductDescription,
+                    SupplierId = product.Supplier!.Id,
                     CategoryId = product.CategoryId,
                     UnitPrice = product.Price,
                     Discount = product.Discount,
+                    ProductAvailable = product.Available,
+                    CurrentOrder = product.CurrentOrder
                 });
             });
         }
 
         public async Task<OrderDetail>? GetOrderDetailsAsync(int id)
         {
-            return await ExecuteSafeAsync(async () =>
+            var result = await _orderDetailRepository.GetOrderDetailByIdAsync(id);
+            if (result == null)
             {
-                var result = await _orderDetailRepository.GetOrderDetailByIdAsync(id);
-                if (result == null)
-                {
-                    _logger.LogError($"Cannot found OrderDetails with id: {id}");
-                    return null!;
-                }
+                _logger.LogError($"Cannot found OrderDetails with id: {id}");
+                return null!;
+            }
 
-                return new OrderDetail()
+            return new OrderDetail()
+            {
+                Total = result.Total,
+                Price = result.Price,
+                OrderId = result.OrderId,
+                Id = result.OrderDetailId,
+                Discount = result.Discount,
+                ProductId = result.ProductId,
+                OrderNumber = result.OrderNumber,
+                ProductInOrder = new Product()
                 {
-                    Id = result.OrderDetailId,
+                    Id = result.ProductId,
+                    ProductName = result.Product!.ProductName,
+                    CategoryId = result.Product!.CategoryId,
                     Price = result.Price,
                     Discount = result.Discount,
-                    Total = result.Total,
-                    ProductInOrder = new Product()
-                    {
-                        Id = result.OrderDetailId,
-                        ProductName = result.Product!.ProductName,
-                        CategoryId = result.Product!.CategoryId,
-                        Price = result.Price,
-                        Discount = result.Discount,
-                    }
-                };
-            });
+                },
+                Order = new Order()
+                {
+                    Id = result.OrderId,
+                    CustomerId = result.Order!.CustomerId,
+                    OrderNumber = result.OrderNumber,
+                    OrderDate = result.Order!.OrderDate,
+                    PaymentId = result.Order!.PaymentId,
+                    Paid = result.Order.Paid,
+                    ShipperId = result.Order!.ShipperId,
+                }
+            };
         }
 
         public async Task DeleteDetailsAsync(int id)
         {
-            var result = await _orderDetailRepository.DeleteOrderDetailsAsync(id);
-            if (result == false)
+            await ExecuteSafeAsync(async () =>
             {
-                _logger.LogError("Cannot delete this Details");
-            }
+                var result = await _orderDetailRepository.DeleteOrderDetailsAsync(id);
+                if (result == false)
+                {
+                    _logger.LogError("Cannot delete this Details");
+                }
+            });
         }
     }
 }

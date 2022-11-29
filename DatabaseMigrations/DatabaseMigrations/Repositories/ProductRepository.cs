@@ -19,7 +19,7 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
-        public async Task<int> AddProductAsync(string name, string discription, int supplierId, int categoryId, decimal unitPrice, float discount, float unitWeight, List<OrderDetailEntity> inOrders)
+        public async Task<int> AddProductAsync(string name, string discription, int supplierId, int categoryId, decimal unitPrice, float discount, List<OrderDetailEntity> inOrders)
         {
             var entity = await _dbContext.Products.AddAsync(new ProductEntity()
             {
@@ -38,7 +38,6 @@ namespace DatabaseMigrations.Repositories
                 Price = entity.Entity.UnitPrice,
                 Discount = entity.Entity.Discount,
                 Total = s.Total,
-                ShipDate = s.ShipDate
             }));
 
             await _dbContext.SaveChangesAsync();

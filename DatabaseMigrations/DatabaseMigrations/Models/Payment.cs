@@ -10,6 +10,7 @@ namespace DatabaseMigrations.Models
     {
         public int Id { get; set; }
         public string? PaymentType { get; set; }
-        public bool? Allowed { get; set; }
+        public IEnumerable<Order>? Orders { get; set; }
+        public bool Allowed { get; set; }
     }
 }

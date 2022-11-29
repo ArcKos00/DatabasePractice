@@ -28,10 +28,7 @@ namespace DatabaseMigrations.Repositories
                 OrderDate = s.OrderDate,
                 PaymentId = entity.Entity.PaymentId,
                 ShipperId = s.ShipperId,
-                ShipDate = s.ShipDate,
-                TransactStatus = s.TransactStatus,
                 Paid = entity.Entity.Allowed,
-                PaymentDate = DateTime.Now,
             }));
 
             await _dbContext.SaveChangesAsync();
