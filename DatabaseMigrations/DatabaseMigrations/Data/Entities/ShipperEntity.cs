@@ -8,7 +8,7 @@ namespace CodeFirst.Entities
 {
     public class ShipperEntity
     {
-        public string? ShipperId { get; set; }
+        public int ShipperId { get; set; }
         public List<OrderEntity> OrderList { get; set; } = new List<OrderEntity>();
 
         public string? CompanyName { get; set; }

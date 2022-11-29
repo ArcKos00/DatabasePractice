@@ -1,33 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFirst.Entities;
 using DatabaseMigrations.Repositories.Abstractions;
+using DatabaseMigrations.Services.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseMigrations.Repositories
 {
     public class SupplierRepository : ISupplierRepository
     {
-        public Task<string> AddSupplierAsync()
+        private readonly ApplicationDbContext _dbContext;
+        public SupplierRepository(IDbContextWrapper<ApplicationDbContext> wrapper)
         {
-            throw new NotImplementedException();
+            _dbContext = wrapper.DbContext;
         }
 
-        public Task<bool> DeleteSupplierAsync()
+        public async Task<int> AddSupplierAsync(string companyName, string contactFName, string phone, string email, List<ProductEntity> products)
         {
-            throw new NotImplementedException();
+            var entity = await _dbContext.Suppliers.AddAsync(new SupplierEntity()
+            {
+                CompanyName = companyName,
+                ContactFName = contactFName,
+                Phone = phone,
+                Email = email,
+            });
+            await _dbContext.AddRangeAsync(products.Select(s => new ProductEntity()
+            {
+                ProductName = s.ProductName,
+                ProductDiscription = s.ProductDiscription,
+                SupplierId = entity.Entity.SupplierId,
+                CategoryId = s.CategoryId,
+                UnitPrice = s.UnitPrice,
+                ProductAvailable = s.ProductAvailable,
+                Discount = s.Discount,
+                UnitWeight = s.UnitWeight,
+                CurrentOrder = s.CurrentOrder,
+                Details = s.Details,
+            }));
+            await _dbContext.SaveChangesAsync();
+            return entity.Entity.SupplierId;
         }
 
-        public Task<SupplierEntity?> GetSupplierByIdAsync(string id)
+        public async Task<SupplierEntity?> GetSupplierByIdAsync(int entityId)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Suppliers.FirstOrDefaultAsync(f => f.SupplierId == entityId);
         }
 
-        public Task<bool> UpdateSupplierAsync(string id, SupplierEntity payment)
+        public async Task<bool> DeleteSupplierAsync(int entityId)
         {
-            throw new NotImplementedException();
+            var entity = await GetSupplierByIdAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).State = EntityState.Deleted;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateSupplierAsync(int entityId, SupplierEntity newEntity)
+        {
+            var entity = await GetSupplierByIdAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

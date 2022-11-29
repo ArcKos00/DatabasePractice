@@ -21,8 +21,6 @@ namespace CodeFirst.EntityConfigs
             builder.Property(p => p.ContactFName).HasColumnName("ContactFName").IsRequired(true);
             builder.Property(p => p.Phone).HasColumnName("Phone").IsRequired(true);
             builder.Property(p => p.Email).HasColumnName("Email").IsRequired(true);
-            builder.Property(p => p.CurrentOrder).HasColumnName("CurrentOrder").IsRequired(true);
-            builder.Property(p => p.CustomerId).HasColumnName("CustomerId").IsRequired(true);
 
             builder.HasMany(m => m.ProductList).WithOne(o => o.Supplier).HasForeignKey(k => k.SupplierId);
         }

@@ -19,7 +19,6 @@ namespace CodeFirst.EntityConfigs
             builder.Property(p => p.CategoryId).HasColumnName("CategoryId").IsRequired(true).ValueGeneratedOnAdd();
             builder.Property(p => p.CategoryName).HasColumnName("CategoryName").IsRequired(true);
             builder.Property(p => p.Discription).HasColumnName("Discription").IsRequired(false);
-            builder.Property(p => p.Picture).HasColumnName("Picture").IsRequired(false);
             builder.Property(p => p.Active).HasColumnName("Active").IsRequired(true);
 
             builder.HasMany(m => m.ProductsList).WithOne(o => o.Category).HasForeignKey(k => k.CategoryId);

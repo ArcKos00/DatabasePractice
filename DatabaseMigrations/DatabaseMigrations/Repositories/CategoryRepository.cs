@@ -36,13 +36,13 @@ namespace DatabaseMigrations.Repositories
 
         public async Task<bool> DeleteCategoryByIdAsync(int categoryId)
         {
-            var category = await _dbContext.Categoryes.FirstOrDefaultAsync(f => f.CategoryId == categoryId);
+            var category = await GetCategoryByIdAsync(categoryId);
             if (category == null)
             {
                 return false;
             }
 
-            _dbContext.Remove(category);
+            _dbContext.Entry(category).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return true;
         }
@@ -57,39 +57,17 @@ namespace DatabaseMigrations.Repositories
             return await _dbContext.Categoryes.Include(i => i.ProductsList).FirstOrDefaultAsync(f => f.CategoryName == categoryName);
         }
 
-        public async Task<bool> UpdateCategoryByIdAsync(int categoryId, CategoryEntity newCategory)
+        public async Task<bool> UpdateCategoryByIdAsync(int entityId, CategoryEntity newEntity)
         {
-            var category = await _dbContext.Categoryes.Include(i => i.ProductsList).FirstOrDefaultAsync(f => f.CategoryId == categoryId);
-            if (category == null)
+            var entity = await GetCategoryByIdAsync(entityId);
+            if (entity == null)
             {
                 return false;
             }
 
-            _dbContext.Update(UpdateCategory(category, newCategory));
+            _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
             await _dbContext.SaveChangesAsync();
             return true;
-        }
-
-        private CategoryEntity UpdateCategory(CategoryEntity oldCategory, CategoryEntity newCategory)
-        {
-            oldCategory.CategoryName = newCategory?.CategoryName;
-            oldCategory.Discription = newCategory?.Discription;
-            if (newCategory?.ProductsList != null)
-            {
-                oldCategory.ProductsList = newCategory.ProductsList;
-            }
-
-            if (oldCategory.Picture.Length == 0 && newCategory?.Picture.Length > 0)
-            {
-                oldCategory.Picture = newCategory.Picture;
-            }
-
-            if (newCategory != null && oldCategory.Active != newCategory.Active)
-            {
-                oldCategory.Active = newCategory.Active;
-            }
-
-            return oldCategory;
         }
     }
 }

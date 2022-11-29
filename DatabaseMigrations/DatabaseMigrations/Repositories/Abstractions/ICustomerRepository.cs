@@ -10,10 +10,10 @@ namespace DatabaseMigrations.Repositories.Abstractions
 {
     public interface ICustomerRepository
     {
-        public Task<string> AddCustomerAsync(string firstName, string lastName, string phone, string password);
-        public Task<CustomerEntity?> GetCustomerByIdAsync(string customerId);
-        public Task<bool> UpdateCustomerByIdAsync(string customerId, CustomerEntity newCustomerData);
-        public Task<bool> DeleteCustomerByIdAsync(string customerId);
-        public Task<IEnumerable<OrderEntity>?> GetCustomerOrders(string customerId);
+        public Task<int> AddCustomerAsync(string firstName, string lastName, string phone, string password);
+        public Task<CustomerEntity?> GetCustomerByIdAsync(int customerId);
+        public Task<bool> UpdateCustomerByIdAsync(int customerId, CustomerEntity newCustomerData);
+        public Task<bool> DeleteCustomerByIdAsync(int customerId);
+        public Task<List<OrderEntity>?> GetCustomerOrders(int customerId);
     }
 }

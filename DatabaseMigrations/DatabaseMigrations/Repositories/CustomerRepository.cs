@@ -19,11 +19,10 @@ namespace DatabaseMigrations.Repositories
             _dbContext = context.DbContext;
         }
 
-        public async Task<string> AddCustomerAsync(string firstName, string secondName, string phone, string password)
+        public async Task<int> AddCustomerAsync(string firstName, string secondName, string phone, string password)
         {
             var customer = new CustomerEntity
             {
-                CustomerId = Guid.NewGuid().ToString(),
                 FirstName = firstName,
                 LastName = secondName,
                 Phone = phone,
@@ -37,54 +36,42 @@ namespace DatabaseMigrations.Repositories
             return customer.CustomerId;
         }
 
-        public async Task<bool> DeleteCustomerByIdAsync(string customerId)
+        public async Task<bool> DeleteCustomerByIdAsync(int customerId)
         {
-            var customer = await _dbContext.Customers.FirstOrDefaultAsync(f => f.CustomerId == customerId);
+            var customer = await GetCustomerByIdAsync(customerId);
             if (customer == null)
             {
                 return false;
             }
 
-            _dbContext.Remove(customer);
+            _dbContext.Entry(customer).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<CustomerEntity?> GetCustomerByIdAsync(string customerId)
+        public async Task<CustomerEntity?> GetCustomerByIdAsync(int customerId)
         {
             return await _dbContext.Customers.Include(i => i.OrderList).FirstOrDefaultAsync(f => f.CustomerId == customerId);
         }
 
-        public async Task<IEnumerable<OrderEntity>?> GetCustomerOrders(string customerId)
+        public async Task<List<OrderEntity>?> GetCustomerOrders(int customerId)
         {
             var customer = await _dbContext.Customers.Include(i => i.OrderList).FirstOrDefaultAsync(f => f.CustomerId == customerId);
 
-            return customer?.OrderList;
+            return customer!.OrderList;
         }
 
-        public async Task<bool> UpdateCustomerByIdAsync(string customerId, CustomerEntity newCustomerData)
+        public async Task<bool> UpdateCustomerByIdAsync(int entityId, CustomerEntity newEntity)
         {
-            var customer = await _dbContext.Customers.Include(i => i.OrderList).FirstOrDefaultAsync(f => f.CustomerId == customerId);
-            if (customer == null)
+            var entity = await GetCustomerByIdAsync(entityId);
+            if (entity == null)
             {
                 return false;
             }
 
-            _dbContext.Customers.Update(UpdateCustomer(customer, newCustomerData));
+            _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
             await _dbContext.SaveChangesAsync();
             return true;
-        }
-
-        private CustomerEntity UpdateCustomer(CustomerEntity oldData, CustomerEntity newData)
-        {
-            oldData.FirstName = newData?.FirstName;
-            oldData.LastName = newData?.LastName;
-            oldData.Address1 = newData?.Address1;
-            oldData.Phone = newData?.Phone;
-            oldData.Email = newData?.Email;
-            oldData.Password = newData?.Password;
-
-            return oldData;
         }
     }
 }

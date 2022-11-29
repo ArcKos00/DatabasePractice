@@ -8,7 +8,7 @@ namespace CodeFirst.Entities
 {
     public class CustomerEntity
     {
-        public string CustomerId { get; set; } = string.Empty;
+        public int CustomerId { get; set; }
         public List<OrderEntity> OrderList { get; set; } = new List<OrderEntity>();
 
         public string? FirstName { get; set; }

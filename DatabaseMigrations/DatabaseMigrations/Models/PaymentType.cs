@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace DatabaseMigrations.Models
 {
-    public class Shipper
+    public enum PaymentType
     {
-        public int Id { get; set; }
-        public string? CompanyName { get; set; }
-        public string? Phone { get; set; }
+        Card,
+        Cash
     }
 }

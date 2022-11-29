@@ -19,15 +19,14 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
-        public async Task<string> AddOrderDetailsAsync(decimal price, float discount, OrderEntity details, ProductEntity product)
+        public async Task<int> AddOrderDetailsAsync(decimal price, float discount, OrderEntity details, ProductEntity product)
         {
             var orderDetail = new OrderDetailEntity()
             {
-                OrderDetailId = Guid.NewGuid().ToString(),
                 Price = price,
                 Discount = discount,
                 ProductId = product.ProductId,
-                OrderId = details.OrderId,
+                OrderId = details.OrderId
             };
 
             await _dbContext.AddAsync(orderDetail);
@@ -36,27 +35,22 @@ namespace DatabaseMigrations.Repositories
             return orderDetail.OrderDetailId;
         }
 
-        public async Task<bool> DeleteOrderDetailsAsync(string detailId)
+        public async Task<bool> DeleteOrderDetailsAsync(int detailId)
         {
-            var details = await _dbContext.OrderDetails.FirstOrDefaultAsync(f => f.OrderDetailId == detailId);
+            var details = await GetOrderDetailByIdAsync(detailId);
             if (details == null)
             {
                 return false;
             }
 
-            _dbContext.Remove(details);
+            _dbContext.Entry(details).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<OrderDetailEntity?> GetOrderDetailByIdAsync(string id)
+        public async Task<OrderDetailEntity?> GetOrderDetailByIdAsync(int detailsId)
         {
             return await _dbContext.OrderDetails.Include(i => i.Order).Include(i => i.Product).FirstOrDefaultAsync();
-        }
-
-        public Task<bool> UpdateOrderDetailsAsync(string id, OrderDetailEntity orderDetails)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -4,30 +4,74 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFirst.Entities;
+using Microsoft.EntityFrameworkCore;
+using DatabaseMigrations.Services.Abstractions;
 using DatabaseMigrations.Repositories.Abstractions;
 
 namespace DatabaseMigrations.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        public Task<string> AddOrderAsync()
+        private readonly ApplicationDbContext _dbContext;
+        public OrderRepository(IDbContextWrapper<ApplicationDbContext> wrapper)
         {
-            throw new NotImplementedException();
+            _dbContext = wrapper.DbContext;
         }
 
-        public Task<bool> DeleteOrderAsync()
+        public async Task<int> AddOrderAsync(int customerId, List<OrderDetailEntity> orderDetails, int shipperId, int payId, DateTime shipDate)
         {
-            throw new NotImplementedException();
+            var order = await _dbContext.Orders.AddAsync(new OrderEntity()
+            {
+                CustomerId = customerId,
+                OrderDate = DateTime.Now,
+                PaymentId = payId,
+                ShipperId = shipperId,
+                ShipDate = shipDate
+            });
+
+            await _dbContext.OrderDetails.AddRangeAsync(orderDetails.Select(s => new OrderDetailEntity()
+            {
+                OrderId = order.Entity.OrderId,
+                ProductId = s.ProductId,
+                Price = s.Price,
+                Discount = s.Discount,
+                Total = s.Total,
+                ShipDate = s.ShipDate
+            }));
+
+            await _dbContext.SaveChangesAsync();
+            return order.Entity.OrderId;
         }
 
-        public Task<OrderEntity?> GetOrderByIdAsync(string id)
+        public async Task<bool> DeleteOrderAsync(int orderId)
         {
-            throw new NotImplementedException();
+            var entity = await GetOrderByIdAsync(orderId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).State = EntityState.Deleted;
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public Task<bool> UpdateOrderAsync(string id, OrderEntity orderDetails)
+        public async Task<OrderEntity?> GetOrderByIdAsync(int orderId)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Orders.FirstOrDefaultAsync(f => f.OrderId == orderId);
+        }
+
+        public async Task<bool> UpdateOrderAsync(int orderId, OrderEntity newEntity)
+        {
+            var entity = await GetOrderByIdAsync(orderId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

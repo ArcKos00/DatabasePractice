@@ -8,6 +8,7 @@ namespace DatabaseMigrations.Models
 {
     public class Payment
     {
+        public int Id { get; set; }
         public string? PaymentType { get; set; }
         public bool? Allowed { get; set; }
     }

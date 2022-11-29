@@ -9,9 +9,9 @@ namespace DatabaseMigrations.Repositories.Abstractions
 {
     public interface IPaymentRepository
     {
-        public Task<string> AddPaymentAsync();
-        public Task<PaymentEntity?> GetPaymentByIdAsync(string id);
-        public Task<bool> UpdatePaymentAsync(string id, PaymentEntity payment);
-        public Task<bool> DeletePaymentAsync();
+        public Task<int> AddPaymentAsync(string payType, List<OrderEntity> orders);
+        public Task<PaymentEntity?> GetPaymentByIdAsync(int entityId);
+        public Task<bool> UpdatePaymentAsync(int entityId, PaymentEntity payment);
+        public Task<bool> DeletePaymentAsync(int entityId);
     }
 }

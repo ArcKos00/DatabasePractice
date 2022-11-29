@@ -9,9 +9,9 @@ namespace DatabaseMigrations.Repositories.Abstractions
 {
     public interface IShipperRepository
     {
-        public Task<string> AddShipperAsync();
-        public Task<ShipperEntity?> GetShipperByIdAsync(string id);
-        public Task<bool> UpdateShipperAsync(string id, ShipperEntity payment);
-        public Task<bool> DeleteShipperAsync();
+        public Task<int> AddShipperAsync(string name, string phone, List<OrderEntity> orders);
+        public Task<ShipperEntity?> GetShipperByIdAsync(int id);
+        public Task<bool> UpdateShipperAsync(int id, ShipperEntity payment);
+        public Task<bool> DeleteShipperAsync(int id);
     }
 }

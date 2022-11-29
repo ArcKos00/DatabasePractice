@@ -11,7 +11,6 @@ namespace CodeFirst.Entities
         public int CategoryId { get; set; }
         public string? CategoryName { get; set; }
         public string? Discription { get; set; }
-        public byte[] Picture { get; set; } = new byte[0];
         public bool Active { get; set; }
 
         public List<ProductEntity> ProductsList { get; set; } = new List<ProductEntity>();

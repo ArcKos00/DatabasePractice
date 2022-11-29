@@ -1,33 +1,73 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CodeFirst.Entities;
+﻿using CodeFirst.Entities;
 using DatabaseMigrations.Repositories.Abstractions;
+using DatabaseMigrations.Services.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseMigrations.Repositories
 {
     public class PaymentRepository : IPaymentRepository
     {
-        public Task<string> AddPaymentAsync()
+        private readonly ApplicationDbContext _dbContext;
+        public PaymentRepository(IDbContextWrapper<ApplicationDbContext> wrapper)
         {
-            throw new NotImplementedException();
+            _dbContext = wrapper.DbContext;
         }
 
-        public Task<bool> DeletePaymentAsync()
+        public async Task<int> AddPaymentAsync(string payType, List<OrderEntity> orders)
         {
-            throw new NotImplementedException();
+            var entity = await _dbContext.Payments.AddAsync(new PaymentEntity()
+            {
+                PaymentType = payType,
+                Allowed = true
+            });
+
+            await _dbContext.Orders.AddRangeAsync(orders.Select(s => new OrderEntity()
+            {
+                CustomerId = s.CustomerId,
+                OrderNumber = s.OrderNumber,
+                OrderDate = s.OrderDate,
+                PaymentId = entity.Entity.PaymentId,
+                ShipperId = s.ShipperId,
+                ShipDate = s.ShipDate,
+                RequiredDate = s.RequiredDate,
+                TransactStatus = s.TransactStatus,
+                Paid = entity.Entity.Allowed,
+                PaymentDate = DateTime.Now,
+            }));
+
+            await _dbContext.SaveChangesAsync();
+            return entity.Entity.PaymentId;
         }
 
-        public Task<PaymentEntity?> GetPaymentByIdAsync(string id)
+        public async Task<PaymentEntity?> GetPaymentByIdAsync(int entityId)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Payments.FirstOrDefaultAsync(f => f.PaymentId == entityId);
         }
 
-        public Task<bool> UpdatePaymentAsync(string id, PaymentEntity payment)
+        public async Task<bool> DeletePaymentAsync(int entityId)
         {
-            throw new NotImplementedException();
+            var entity = await GetPaymentByIdAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).State = EntityState.Deleted;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdatePaymentAsync(int entityId, PaymentEntity newEntity)
+        {
+            var entity = await GetPaymentByIdAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

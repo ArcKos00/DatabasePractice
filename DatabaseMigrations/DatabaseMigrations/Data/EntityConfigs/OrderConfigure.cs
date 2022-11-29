@@ -17,7 +17,7 @@ namespace CodeFirst.EntityConfigs
             builder.HasKey(x => x.OrderId);
 
             builder.Property(p => p.OrderId).HasColumnName("OrderId").IsRequired(true).ValueGeneratedOnAdd();
-            builder.Property(p => p.CustomerId).HasColumnName("CustomerId").IsRequired(true);
+            builder.Property(p => p.CustomerId).HasColumnName("CustomerId").IsRequired(true).ValueGeneratedOnAdd();
             builder.Property(p => p.OrderNumber).HasColumnName("OrderNumber").IsRequired(true);
             builder.Property(p => p.PaymentId).HasColumnName("PaymentId").IsRequired(true);
             builder.Property(p => p.OrderDate).HasColumnName("OrderDate").IsRequired(true);

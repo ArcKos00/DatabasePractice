@@ -9,9 +9,9 @@ namespace DatabaseMigrations.Repositories.Abstractions
 {
     public interface ISupplierRepository
     {
-        public Task<string> AddSupplierAsync();
-        public Task<SupplierEntity?> GetSupplierByIdAsync(string id);
-        public Task<bool> UpdateSupplierAsync(string id, SupplierEntity payment);
-        public Task<bool> DeleteSupplierAsync();
+        public Task<int> AddSupplierAsync(string companyName, string contactFName, string phone, string email, List<ProductEntity> products);
+        public Task<SupplierEntity?> GetSupplierByIdAsync(int id);
+        public Task<bool> UpdateSupplierAsync(int id, SupplierEntity payment);
+        public Task<bool> DeleteSupplierAsync(int id);
     }
 }

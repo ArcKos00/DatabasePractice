@@ -19,14 +19,14 @@ namespace CodeFirst.Entities
 
         public int PaymentId { get; set; }
         public PaymentEntity? Pay { get; set; }
+        public bool TransactStatus { get; set; }
+        public bool Paid { get; set; }
+        public DateTime PaymentDate { get; set; }
 
         public int ShipperId { get; set; }
         public ShipperEntity? Shipper { get; set; }
         public DateTime ShipDate { get; set; }
 
         public DateTime RequiredDate { get; set; }
-        public string? TransactStatus { get; set; }
-        public bool Paid { get; set; }
-        public DateTime PaymentDate { get; set; }
     }
 }

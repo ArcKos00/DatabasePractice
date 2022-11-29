@@ -5,29 +5,75 @@ using System.Text;
 using System.Threading.Tasks;
 using CodeFirst.Entities;
 using DatabaseMigrations.Repositories.Abstractions;
+using DatabaseMigrations.Services.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseMigrations.Repositories
 {
     public class ShipperRepository : IShipperRepository
     {
-        public Task<string> AddShipperAsync()
+        private readonly ApplicationDbContext _dbContext;
+        public ShipperRepository(IDbContextWrapper<ApplicationDbContext> wrapper)
         {
-            throw new NotImplementedException();
+            _dbContext = wrapper.DbContext;
         }
 
-        public Task<bool> DeleteShipperAsync()
+        public async Task<int> AddShipperAsync(string name, string phone, List<OrderEntity> orders)
         {
-            throw new NotImplementedException();
+            var entity = await _dbContext.Shippers.AddAsync(new ShipperEntity()
+            {
+                CompanyName = name,
+                Phone = phone
+            });
+
+            await _dbContext.Orders.AddRangeAsync(orders.Select(s => new OrderEntity()
+            {
+                CustomerId = s.CustomerId,
+                OrderNumber = s.OrderNumber,
+                Details = s.Details,
+                OrderDate = s.OrderDate,
+                PaymentId = s.PaymentId,
+                TransactStatus = s.TransactStatus,
+                Paid = s.Paid,
+                PaymentDate = s.PaymentDate,
+                ShipperId = entity.Entity.ShipperId,
+                ShipDate = s.ShipDate,
+                RequiredDate = s.RequiredDate
+            }));
+
+            await _dbContext.SaveChangesAsync();
+            return entity.Entity.ShipperId;
         }
 
-        public Task<ShipperEntity?> GetShipperByIdAsync(string id)
+        public async Task<ShipperEntity?> GetShipperByIdAsync(int entityId)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Shippers.FirstOrDefaultAsync(f => f.ShipperId == entityId);
         }
 
-        public Task<bool> UpdateShipperAsync(string id, ShipperEntity payment)
+        public async Task<bool> DeleteShipperAsync(int entityId)
         {
-            throw new NotImplementedException();
+            var entity = await GetShipperByIdAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).State = EntityState.Deleted;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateShipperAsync(int entityId, ShipperEntity newEntity)
+        {
+            var entity = await GetShipperByIdAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

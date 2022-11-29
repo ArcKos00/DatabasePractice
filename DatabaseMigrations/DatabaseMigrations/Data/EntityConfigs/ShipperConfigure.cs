@@ -16,7 +16,7 @@ namespace CodeFirst.EntityConfigs
             builder.ToTable("Shippers");
             builder.HasKey(k => k.ShipperId);
 
-            builder.Property(p => p.ShipperId).HasColumnName("ShipperId").IsRequired(true);
+            builder.Property(p => p.ShipperId).HasColumnName("ShipperId").IsRequired(true).ValueGeneratedOnAdd();
             builder.Property(p => p.CompanyName).HasColumnName("CompanyName").IsRequired(true);
             builder.Property(p => p.Phone).HasColumnName("Phone").IsRequired(true);
 

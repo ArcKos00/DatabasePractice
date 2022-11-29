@@ -6,34 +6,81 @@ using System.Text;
 using System.Threading.Tasks;
 using CodeFirst.Entities;
 using DatabaseMigrations.Repositories.Abstractions;
+using DatabaseMigrations.Services.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseMigrations.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        public Task<string> AddProductAsync()
+        private readonly ApplicationDbContext _dbContext;
+        public ProductRepository(IDbContextWrapper<ApplicationDbContext> wrapper)
         {
-            throw new NotImplementedException();
+            _dbContext = wrapper.DbContext;
         }
 
-        public Task<bool> DeleteProductAsync()
+        public async Task<int> AddProductAsync(string name, string discription, int supplierId, int categoryId, decimal unitPrice, float discount, float unitWeight, List<OrderDetailEntity> inOrders)
         {
-            throw new NotImplementedException();
+            var entity = await _dbContext.Products.AddAsync(new ProductEntity()
+            {
+                ProductName = name,
+                ProductDiscription = discription,
+                SupplierId = supplierId,
+                CategoryId = categoryId,
+                UnitPrice = unitPrice,
+                Discount = discount,
+                UnitWeight = unitWeight
+            });
+
+            await _dbContext.OrderDetails.AddRangeAsync(inOrders.Select(s => new OrderDetailEntity()
+            {
+                OrderId = s.OrderId,
+                ProductId = entity.Entity.ProductId,
+                OrderNumber = s.OrderNumber,
+                Price = entity.Entity.UnitPrice,
+                Discount = entity.Entity.Discount,
+                Total = s.Total,
+                ShipDate = s.ShipDate
+            }));
+
+            await _dbContext.SaveChangesAsync();
+            return entity.Entity.ProductId;
         }
 
-        public Task<ProductEntity?> GetProductByIdAsync(string id)
+        public async Task<ProductEntity?> GetProductByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Products.FirstOrDefaultAsync(f => f.ProductId == id);
         }
 
-        public Task<bool> UpdateProductAsync(string id, ProductEntity payment)
+        public async Task<bool> DeleteProductAsync(int entityId)
         {
-            throw new NotImplementedException();
+            var entity = await GetProductByIdAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).State = EntityState.Deleted;
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        // получить список категорий в которых находится продукт
-        public async Task<List<CategoryEntity>> GetCategoryListAsync(ProductEntity product)
+        public async Task<bool> UpdateProductAsync(int entityId, ProductEntity newEntity)
         {
+            var entity = await GetProductByIdAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<CategoryEntity>?> GetCategoryListAsync(ProductEntity newEntity)
+        {
+            return await _dbContext.Categoryes.Where(s => s.ProductsList.Contains(newEntity)).ToListAsync();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace CodeFirst.Entities
 {
     public class OrderDetailEntity
     {
-        public string OrderDetailId { get; set; } = string.Empty;
+        public int OrderDetailId { get; set; }
 
         public int OrderId { get; set; }
         public OrderEntity? Order { get; set; }
@@ -21,6 +21,5 @@ namespace CodeFirst.Entities
         public float Discount { get; set; }
         public decimal Total { get; set; }
         public DateTime ShipDate { get; set; }
-        public DateTime BillDate { get; set; }
     }
 }

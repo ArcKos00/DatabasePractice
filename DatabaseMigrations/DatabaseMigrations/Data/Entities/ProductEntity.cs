@@ -20,13 +20,9 @@ namespace CodeFirst.Entities
 
         public decimal UnitPrice { get; set; }
         public float Discount { get; set; }
-        public float UnitWeight { get; set; }
         public bool ProductAvailable { get; set; }
-        public bool DiscountAvailable { get; set; }
 
         public int CurrentOrder { get; set; }
         public List<OrderDetailEntity> Details { get; set; } = new List<OrderDetailEntity>();
-
-        public byte[] Picture { get; set; } = new byte[0];
     }
 }
