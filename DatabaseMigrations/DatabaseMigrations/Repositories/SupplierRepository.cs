@@ -37,7 +37,6 @@ namespace DatabaseMigrations.Repositories
                 UnitPrice = s.UnitPrice,
                 ProductAvailable = s.ProductAvailable,
                 Discount = s.Discount,
-                UnitWeight = s.UnitWeight,
                 CurrentOrder = s.CurrentOrder,
                 Details = s.Details,
             }));

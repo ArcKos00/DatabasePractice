@@ -29,7 +29,6 @@ namespace DatabaseMigrations.Repositories
                 PaymentId = entity.Entity.PaymentId,
                 ShipperId = s.ShipperId,
                 ShipDate = s.ShipDate,
-                RequiredDate = s.RequiredDate,
                 TransactStatus = s.TransactStatus,
                 Paid = entity.Entity.Allowed,
                 PaymentDate = DateTime.Now,

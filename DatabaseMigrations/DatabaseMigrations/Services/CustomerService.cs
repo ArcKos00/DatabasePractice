@@ -18,7 +18,7 @@ namespace DatabaseMigrations.Services
         private readonly ILogger<Customer> _logger;
 
         public CustomerService(
-            ILogger<CustomerService> logService,
+            ILogger<BaseDataService<ApplicationDbContext>> logService,
             ILogger<Customer> logger,
             ICustomerRepository repository,
             INotificationsService notification,

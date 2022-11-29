@@ -21,8 +21,6 @@ namespace CodeFirst.EntityConfigs
             builder.Property(p => p.OrderNumber).HasColumnName("OrderNumber").IsRequired(true);
             builder.Property(p => p.PaymentId).HasColumnName("PaymentId").IsRequired(true);
             builder.Property(p => p.OrderDate).HasColumnName("OrderDate").IsRequired(true);
-            builder.Property(p => p.ShipDate).HasColumnName("ShipData").IsRequired(true);
-            builder.Property(p => p.RequiredDate).HasColumnName("RequiredDate").IsRequired(true);
             builder.Property(p => p.ShipperId).HasColumnName("ShipperId").IsRequired(true);
             builder.Property(p => p.TransactStatus).HasColumnName("Transact").IsRequired(true);
             builder.Property(p => p.Paid).HasColumnName("Paid").IsRequired(true);

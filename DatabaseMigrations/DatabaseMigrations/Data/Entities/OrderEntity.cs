@@ -26,7 +26,5 @@ namespace CodeFirst.Entities
         public int ShipperId { get; set; }
         public ShipperEntity? Shipper { get; set; }
         public DateTime ShipDate { get; set; }
-
-        public DateTime RequiredDate { get; set; }
     }
 }

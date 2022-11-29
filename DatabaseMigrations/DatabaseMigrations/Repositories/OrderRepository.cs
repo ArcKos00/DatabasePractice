@@ -18,7 +18,7 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
-        public async Task<int> AddOrderAsync(int customerId, List<OrderDetailEntity> orderDetails, int shipperId, int payId, DateTime shipDate)
+        public async Task<int> AddOrderAsync(int customerId, int shipperId, int payId, DateTime shipDate, List<OrderDetailEntity> orderDetails)
         {
             var order = await _dbContext.Orders.AddAsync(new OrderEntity()
             {
@@ -41,19 +41,6 @@ namespace DatabaseMigrations.Repositories
 
             await _dbContext.SaveChangesAsync();
             return order.Entity.OrderId;
-        }
-
-        public async Task<bool> DeleteOrderAsync(int orderId)
-        {
-            var entity = await GetOrderByIdAsync(orderId);
-            if (entity == null)
-            {
-                return false;
-            }
-
-            _dbContext.Entry(entity).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return true;
         }
 
         public async Task<OrderEntity?> GetOrderByIdAsync(int orderId)

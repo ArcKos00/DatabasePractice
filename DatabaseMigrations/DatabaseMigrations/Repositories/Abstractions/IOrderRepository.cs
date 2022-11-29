@@ -9,9 +9,8 @@ namespace DatabaseMigrations.Repositories.Abstractions
 {
     public interface IOrderRepository
     {
-        public Task<int> AddOrderAsync(int customerId, List<OrderDetailEntity> orderDetails, int shipperId, int payId, DateTime shipDate);
+        public Task<int> AddOrderAsync(int customerId, int shipperId, int payId, DateTime shipDate, List<OrderDetailEntity> orderDetails);
         public Task<OrderEntity?> GetOrderByIdAsync(int id);
         public Task<bool> UpdateOrderAsync(int orderId, OrderEntity orderDetails);
-        public Task<bool> DeleteOrderAsync(int orderId);
     }
 }

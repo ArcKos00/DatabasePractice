@@ -38,7 +38,6 @@ namespace DatabaseMigrations.Repositories
                 PaymentDate = s.PaymentDate,
                 ShipperId = entity.Entity.ShipperId,
                 ShipDate = s.ShipDate,
-                RequiredDate = s.RequiredDate
             }));
 
             await _dbContext.SaveChangesAsync();

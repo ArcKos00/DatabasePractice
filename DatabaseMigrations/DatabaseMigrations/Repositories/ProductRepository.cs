@@ -29,14 +29,12 @@ namespace DatabaseMigrations.Repositories
                 CategoryId = categoryId,
                 UnitPrice = unitPrice,
                 Discount = discount,
-                UnitWeight = unitWeight
             });
 
             await _dbContext.OrderDetails.AddRangeAsync(inOrders.Select(s => new OrderDetailEntity()
             {
                 OrderId = s.OrderId,
                 ProductId = entity.Entity.ProductId,
-                OrderNumber = s.OrderNumber,
                 Price = entity.Entity.UnitPrice,
                 Discount = entity.Entity.Discount,
                 Total = s.Total,

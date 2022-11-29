@@ -18,7 +18,7 @@ namespace DatabaseMigrations.Services
 
         public OrderDetailService(
             ILogger<OrderDetail> logger,
-            ILogger<OrderDetailService> loggerService,
+            ILogger<BaseDataService<ApplicationDbContext>> loggerService,
             IDbContextWrapper<ApplicationDbContext> wrapper,
             IOrderDetailsRepository repository)
             : base(wrapper, loggerService)
