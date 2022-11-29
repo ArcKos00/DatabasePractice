@@ -27,36 +27,11 @@ namespace DatabaseMigrations.Services
             _logger = logger;
         }
 
-        public async Task<int> AddOrderDetailsAsync(decimal price, float discount, decimal total, Order order, Product product)
+        public async Task<int> AddOrderDetailsAsync(decimal price, float discount, decimal total, int order, int product)
         {
             return await ExecuteSafeAsync<int>(async () =>
             {
-                return await _orderDetailRepository.AddOrderDetailsAsync(
-                price,
-                discount,
-                total,
-                new OrderEntity()
-                {
-                    OrderId = order.Id,
-                    CustomerId = order.CustomerOrder!.Id,
-                    OrderNumber = order.OrderNumber,
-                    OrderDate = order.OrderDate,
-                    PaymentId = order.Payment!.Id,
-                    Paid = order.Paid,
-                    ShipperId = order.ShipperId,
-                },
-                new ProductEntity()
-                {
-                    ProductId = product.Id,
-                    ProductName = product.ProductName,
-                    ProductDiscription = product.ProductDescription,
-                    SupplierId = product.Supplier!.Id,
-                    CategoryId = product.CategoryId,
-                    UnitPrice = product.Price,
-                    Discount = product.Discount,
-                    ProductAvailable = product.Available,
-                    CurrentOrder = product.CurrentOrder
-                });
+                return await _orderDetailRepository.AddOrderDetailsAsync(price, discount, total, order, product);
             });
         }
 

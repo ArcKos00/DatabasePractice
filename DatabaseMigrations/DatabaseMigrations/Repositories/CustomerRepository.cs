@@ -25,7 +25,7 @@ namespace DatabaseMigrations.Repositories
             {
                 FirstName = firstName,
                 LastName = secondName,
-                Address1 = address,
+                Adddres = address,
                 Phone = phone,
                 Email = email,
                 Password = password,

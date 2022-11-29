@@ -11,10 +11,10 @@ namespace CodeFirst.Entities
         public int OrderDetailId { get; set; }
 
         public int OrderId { get; set; }
-        public OrderEntity? Order { get; set; }
+        public OrderEntity Order { get; set; } = null!;
 
         public int ProductId { get; set; }
-        public ProductEntity? Product { get; set; }
+        public ProductEntity Product { get; set; } = null!;
 
         public int OrderNumber { get; set; }
         public decimal Price { get; set; }

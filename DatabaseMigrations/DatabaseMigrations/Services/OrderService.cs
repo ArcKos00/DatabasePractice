@@ -59,7 +59,7 @@ namespace DatabaseMigrations.Services
                 {
                     FirstName = result.Customer!.FirstName,
                     LastName = result.Customer!.LastName,
-                    Address = result.Customer!.Address1,
+                    Address = result.Customer!.Adddres,
                     Phone = result.Customer!.Phone,
                     Email = result.Customer!.Email,
                     Password = result.Customer!.Password,

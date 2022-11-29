@@ -13,10 +13,10 @@ namespace CodeFirst.Entities
         public string? ProductDiscription { get; set; }
 
         public int SupplierId { get; set; }
-        public SupplierEntity? Supplier { get; set; }
+        public SupplierEntity Supplier { get; set; } = null!;
 
         public int CategoryId { get; set; }
-        public CategoryEntity? Category { get; set; }
+        public CategoryEntity Category { get; set; } = null!;
 
         public decimal UnitPrice { get; set; }
         public float Discount { get; set; }

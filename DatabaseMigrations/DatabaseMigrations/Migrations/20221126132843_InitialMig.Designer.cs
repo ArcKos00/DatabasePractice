@@ -66,10 +66,10 @@ namespace DatabaseMigrations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CustomerId"));
 
-                    b.Property<string>("Address1")
+                    b.Property<string>("Adddres")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Address1");
+                        .HasColumnName("Adddres");
 
                     b.Property<string>("Address2")
                         .IsRequired()
@@ -569,10 +569,10 @@ namespace DatabaseMigrations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SupplierId"));
 
-                    b.Property<string>("Address1")
+                    b.Property<string>("Adddres")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Address1");
+                        .HasColumnName("Adddres");
 
                     b.Property<string>("Address2")
                         .IsRequired()

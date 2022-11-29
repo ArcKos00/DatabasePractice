@@ -19,7 +19,7 @@ namespace CodeFirst.EntityConfigs
             builder.Property(p => p.CustomerId).HasColumnName("CustomerId").IsRequired(true).ValueGeneratedOnAdd();
             builder.Property(p => p.FirstName).HasColumnName("FirstName").IsRequired(true);
             builder.Property(p => p.LastName).HasColumnName("LastName").IsRequired(true);
-            builder.Property(p => p.Address1).HasColumnName("Address1").IsRequired(true);
+            builder.Property(p => p.Adddres).HasColumnName("Address").IsRequired(true);
             builder.Property(p => p.Phone).HasColumnName("Phone").IsRequired(true);
             builder.Property(p => p.Email).HasColumnName("Email").IsRequired(true);
             builder.Property(p => p.Password).HasColumnName("Password").IsRequired(true);
