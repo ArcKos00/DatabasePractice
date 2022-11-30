@@ -30,13 +30,20 @@ namespace DatabaseMigrations.Services
             _logger = logger;
         }
 
-        public async Task<int> AddCustomerAsync(string address, string email, string firstName, string secondName, string phone, string password)
+        public async Task<int> AddCustomerAsync(string address, string email, string firstName, string secondName, string phone, string password, IEnumerable<Order> orders)
         {
             return await ExecuteSafeAsync<int>(async () =>
             {
-                var result = await _customerRepository.AddCustomerAsync(address, email, firstName, secondName, phone, password);
-
-                return result;
+                return await _customerRepository.AddCustomerAsync(address, email, firstName, secondName, phone, password, orders.Select(s => new OrderEntity()
+                {
+                    OrderId = s.Id,
+                    CustomerId = s.CustomerId,
+                    OrderNumber = s.OrderNumber,
+                    OrderDate = s.OrderDate,
+                    PaymentId = s.PaymentId,
+                    Paid = s.Paid,
+                    ShipperId = s.ShipperId
+                }).ToList());
             });
         }
 
@@ -54,7 +61,7 @@ namespace DatabaseMigrations.Services
                 Id = result.CustomerId,
                 FirstName = result.FirstName,
                 LastName = result.LastName,
-                Address = result.Adddres,
+                Address1 = result.Address1,
                 Email = result.Email,
                 Phone = result.Phone,
                 DateEntry = result.DateEntered,
@@ -77,7 +84,7 @@ namespace DatabaseMigrations.Services
                     CustomerId = customer.Id,
                     FirstName = customer.FirstName,
                     LastName = customer.LastName,
-                    Adddres = customer.Address,
+                    Address1 = customer.Address1,
                     Phone = customer.Phone,
                     Email = customer.Email,
                     Password = customer.Password,

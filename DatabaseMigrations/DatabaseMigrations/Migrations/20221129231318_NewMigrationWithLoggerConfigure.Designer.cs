@@ -60,10 +60,10 @@ namespace DatabaseMigrations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CustomerId"));
 
-                    b.Property<string>("Adddres")
+                    b.Property<string>("Address1")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Adddres");
+                        .HasColumnName("Address1");
 
                     b.Property<DateTime>("DateEntered")
                         .HasColumnType("timestamp with time zone")
@@ -123,7 +123,7 @@ namespace DatabaseMigrations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderNumber"));
 
-                    b.Property<decimal>("Price")
+                    b.Property<float>("Price")
                         .HasColumnType("numeric")
                         .HasColumnName("Price");
 
@@ -131,7 +131,7 @@ namespace DatabaseMigrations.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("ProductId");
 
-                    b.Property<decimal>("Total")
+                    b.Property<float>("Total")
                         .HasColumnType("numeric")
                         .HasColumnName("Total");
 
@@ -251,7 +251,7 @@ namespace DatabaseMigrations.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("SupplierId");
 
-                    b.Property<decimal>("UnitPrice")
+                    b.Property<float>("UnitPrice")
                         .HasColumnType("numeric")
                         .HasColumnName("UnitPrice");
 

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DatabaseMigrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221129230301_NewMigration")]
-    partial class NewMigration
+    [Migration("20221130125514_TestMigration")]
+    partial class TestMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -124,7 +124,7 @@ namespace DatabaseMigrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderNumber"));
 
                     b.Property<float>("Price")
-                        .HasColumnType("numeric")
+                        .HasColumnType("real")
                         .HasColumnName("Price");
 
                     b.Property<int>("ProductId")
@@ -132,7 +132,7 @@ namespace DatabaseMigrations.Migrations
                         .HasColumnName("ProductId");
 
                     b.Property<float>("Total")
-                        .HasColumnType("numeric")
+                        .HasColumnType("real")
                         .HasColumnName("Total");
 
                     b.HasKey("OrderDetailId");
@@ -252,7 +252,7 @@ namespace DatabaseMigrations.Migrations
                         .HasColumnName("SupplierId");
 
                     b.Property<float>("UnitPrice")
-                        .HasColumnType("numeric")
+                        .HasColumnType("real")
                         .HasColumnName("UnitPrice");
 
                     b.HasKey("ProductId");

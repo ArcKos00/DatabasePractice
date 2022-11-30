@@ -15,7 +15,7 @@ namespace CodeFirst.Entities
 
         public int OrderNumber { get; set; }
         public List<OrderDetailEntity> Details { get; set; } = new List<OrderDetailEntity>();
-        public DateTime OrderDate { get; set; }
+        public DateOnly OrderDate { get; set; }
 
         public int PaymentId { get; set; }
         public PaymentEntity Pay { get; set; } = null!;

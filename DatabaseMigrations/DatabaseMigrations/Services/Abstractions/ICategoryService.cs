@@ -9,7 +9,7 @@ namespace DatabaseMigrations.Services.Abstractions
 {
     public interface ICategoryService
     {
-        public Task<int> AddCategotyAsync(string categoryName, string discription, bool isActive = false);
+        public Task<int> AddCategotyAsync(string categoryName, string discription, IEnumerable<Product> products, bool isActive = false);
 
         public Task<Category> GetCategoryAsync(int categoryId);
 

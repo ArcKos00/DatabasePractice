@@ -18,13 +18,13 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
-        public async Task<int> AddOrderAsync(int customerId, int shipperId, int payId, int orderNumber, bool paid, List<OrderDetailEntity> orderDetails)
+        public async Task<int> AddOrderAsync(int customerId, int shipperId, int payId, int orderNumber, List<OrderDetailEntity> orderDetails, bool paid = false)
         {
             var order = await _dbContext.Orders.AddAsync(new OrderEntity()
             {
                 CustomerId = customerId,
-                OrderDate = DateTime.Now,
                 OrderNumber = orderNumber,
+                OrderDate = DateOnly.FromDateTime(DateTime.Now),
                 Paid = paid,
                 PaymentId = payId,
                 ShipperId = shipperId
@@ -37,6 +37,10 @@ namespace DatabaseMigrations.Repositories
                 Price = s.Price,
                 Discount = s.Discount,
                 Total = s.Total,
+                OrderDetailId = s.OrderDetailId,
+                OrderNumber = s.OrderNumber,
+                Product = s.Product,
+                Order = s.Order
             }));
 
             await _dbContext.SaveChangesAsync();

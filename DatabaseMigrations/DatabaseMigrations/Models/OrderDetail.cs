@@ -14,8 +14,8 @@ namespace DatabaseMigrations.Models
         public int OrderId { get; set; }
         public Order Order { get; set; } = null!;
         public int OrderNumber { get; set; }
-        public decimal Price { get; set; }
+        public float Price { get; set; }
         public float Discount { get; set; }
-        public decimal Total { get; set; }
+        public float Total { get; set; }
     }
 }

@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 
 IConfiguration config = new ConfigurationBuilder()
     .AddJsonFile("config.json")
@@ -19,7 +18,7 @@ ConfigurationService(serviceCollection, config);
 var provider = serviceCollection.BuildServiceProvider();
 
 var app = provider.GetService<Application>();
-app!.Start();
+await app!.Start();
 
 void ConfigurationService(ServiceCollection collection, IConfiguration config)
 {

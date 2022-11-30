@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DatabaseMigrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221129230301_NewMigration")]
-    partial class NewMigration
+    [Migration("20221130140557_NewTestMigration3")]
+    partial class NewTestMigration3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,27 +22,32 @@ namespace DatabaseMigrations.Migrations
                 .HasAnnotation("ProductVersion", "6.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseHiLo(modelBuilder, "EntityFrameworkHiLoSequence");
+
+            modelBuilder.HasSequence("EntityFrameworkHiLoSequence")
+                .IncrementsBy(10);
 
             modelBuilder.Entity("CodeFirst.Entities.CategoryEntity", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("CategoryId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("CategoryId"));
 
                     b.Property<bool>("Active")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bool")
                         .HasColumnName("Active");
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("text")
                         .HasColumnName("CategoryName");
 
                     b.Property<string>("Discription")
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("Discription");
 
@@ -55,42 +60,48 @@ namespace DatabaseMigrations.Migrations
                 {
                     b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("CustomerId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CustomerId"));
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("CustomerId"));
 
                     b.Property<string>("Address1")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("Address1");
 
-                    b.Property<DateTime>("DateEntered")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("DateEntered")
+                        .HasColumnType("date")
                         .HasColumnName("DateEntered");
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("Email");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("text")
                         .HasColumnName("FirstName");
 
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("text")
                         .HasColumnName("LastName");
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("Password");
 
                     b.Property<string>("Phone")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("text")
                         .HasColumnName("Phone");
 
@@ -103,36 +114,33 @@ namespace DatabaseMigrations.Migrations
                 {
                     b.Property<int>("OrderDetailId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OrderDetailId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderDetailId"));
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("OrderDetailId"));
 
-                    b.Property<float>("Discount")
-                        .HasColumnType("real")
+                    b.Property<double>("Discount")
+                        .HasColumnType("float8")
                         .HasColumnName("Discount");
 
                     b.Property<int>("OrderId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OrderId");
 
                     b.Property<int>("OrderNumber")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OrderNumber");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderNumber"));
-
-                    b.Property<float>("Price")
-                        .HasColumnType("numeric")
+                    b.Property<double>("Price")
+                        .HasColumnType("float8")
                         .HasColumnName("Price");
 
                     b.Property<int>("ProductId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ProductId");
 
-                    b.Property<float>("Total")
-                        .HasColumnType("numeric")
+                    b.Property<double>("Total")
+                        .HasColumnType("float8")
                         .HasColumnName("Total");
 
                     b.HasKey("OrderDetailId");
@@ -148,34 +156,33 @@ namespace DatabaseMigrations.Migrations
                 {
                     b.Property<int>("OrderId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OrderId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderId"));
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("OrderId"));
 
                     b.Property<int>("CustomerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("CustomerId");
 
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<DateOnly>("OrderDate")
+                        .HasColumnType("date")
                         .HasColumnName("OrderDate");
 
                     b.Property<int>("OrderNumber")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("OrderNumber");
 
                     b.Property<bool>("Paid")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bool")
                         .HasColumnName("Paid");
 
                     b.Property<int>("PaymentId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PaymentId");
 
                     b.Property<int>("ShipperId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ShipperId");
 
                     b.HasKey("OrderId");
@@ -193,17 +200,18 @@ namespace DatabaseMigrations.Migrations
                 {
                     b.Property<int>("PaymentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("PaymentId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PaymentId"));
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("PaymentId"));
 
                     b.Property<bool>("Allowed")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bool")
                         .HasColumnName("Allowed");
 
                     b.Property<string>("PaymentType")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("PaymentType");
 
@@ -216,43 +224,45 @@ namespace DatabaseMigrations.Migrations
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ProductId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProductId"));
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("ProductId"));
 
                     b.Property<int>("CategoryId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("CategoryId");
 
                     b.Property<int>("CurrentOrder")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("CurrentOrder");
 
-                    b.Property<float>("Discount")
-                        .HasColumnType("real")
+                    b.Property<double>("Discount")
+                        .HasColumnType("float8")
                         .HasColumnName("Discount");
 
                     b.Property<bool>("ProductAvailable")
-                        .HasColumnType("boolean")
+                        .HasColumnType("bool")
                         .HasColumnName("ProductAvailable");
 
                     b.Property<string>("ProductDiscription")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("ProductDiscription");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("ProductName");
 
                     b.Property<int>("SupplierId")
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SupplierId");
 
-                    b.Property<float>("UnitPrice")
-                        .HasColumnType("numeric")
+                    b.Property<double>("UnitPrice")
+                        .HasColumnType("float8")
                         .HasColumnName("UnitPrice");
 
                     b.HasKey("ProductId");
@@ -268,18 +278,20 @@ namespace DatabaseMigrations.Migrations
                 {
                     b.Property<int>("ShipperId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("ShipperId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ShipperId"));
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("ShipperId"));
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("CompanyName");
 
                     b.Property<string>("Phone")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("text")
                         .HasColumnName("Phone");
 
@@ -292,28 +304,32 @@ namespace DatabaseMigrations.Migrations
                 {
                     b.Property<int>("SupplierId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("int")
                         .HasColumnName("SupplierId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SupplierId"));
+                    NpgsqlPropertyBuilderExtensions.UseHiLo(b.Property<int>("SupplierId"));
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("CompanyName");
 
                     b.Property<string>("ContactFName")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("ContactFName");
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("text")
                         .HasColumnName("Email");
 
                     b.Property<string>("Phone")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("text")
                         .HasColumnName("Phone");
 

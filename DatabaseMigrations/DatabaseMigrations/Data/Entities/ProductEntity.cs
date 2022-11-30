@@ -18,7 +18,7 @@ namespace CodeFirst.Entities
         public int CategoryId { get; set; }
         public CategoryEntity Category { get; set; } = null!;
 
-        public decimal UnitPrice { get; set; }
+        public float UnitPrice { get; set; }
         public float Discount { get; set; }
         public bool ProductAvailable { get; set; }
 

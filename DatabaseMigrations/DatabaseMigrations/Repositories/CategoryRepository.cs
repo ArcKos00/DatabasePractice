@@ -19,19 +19,33 @@ namespace DatabaseMigrations.Repositories
             _dbContext = context.DbContext;
         }
 
-        public async Task<int> AddCategoryAsync(string categoryName, string discription, bool isActive = false)
+        public async Task<int> AddCategoryAsync(string categoryName, string discription, List<ProductEntity> products, bool isActive = false)
         {
-            var category = new CategoryEntity()
+            var category = await _dbContext.Categoryes.AddAsync(new CategoryEntity()
             {
                 CategoryName = categoryName,
                 Discription = discription,
                 Active = isActive
-            };
+            });
 
-            await _dbContext.AddAsync(category);
+            await _dbContext.Products.AddRangeAsync(products.Select(s => new ProductEntity()
+            {
+                ProductId = s.ProductId,
+                ProductName = s.ProductName,
+                ProductDiscription = s.ProductDiscription,
+                SupplierId = s.SupplierId,
+                CategoryId = category.Entity.CategoryId,
+                UnitPrice = s.UnitPrice,
+                Discount = s.Discount,
+                ProductAvailable = s.ProductAvailable,
+                CurrentOrder = s.CurrentOrder,
+                Details = s.Details,
+                Supplier = s.Supplier,
+                Category = s.Category
+            }));
+
             await _dbContext.SaveChangesAsync();
-
-            return category.CategoryId;
+            return category.Entity.CategoryId;
         }
 
         public async Task<bool> DeleteCategoryByIdAsync(int categoryId)

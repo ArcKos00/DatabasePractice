@@ -16,10 +16,10 @@ namespace CodeFirst.EntityConfigs
             builder.ToTable("Category");
             builder.HasKey(k => k.CategoryId);
 
-            builder.Property(p => p.CategoryId).HasColumnName("CategoryId").IsRequired(true).ValueGeneratedOnAdd();
-            builder.Property(p => p.CategoryName).HasColumnName("CategoryName").IsRequired(true);
-            builder.Property(p => p.Discription).HasColumnName("Discription").IsRequired(false);
-            builder.Property(p => p.Active).HasColumnName("Active").IsRequired(true);
+            builder.Property(p => p.CategoryId).HasColumnName("CategoryId").IsRequired(true).HasColumnType("int").ValueGeneratedOnAdd();
+            builder.Property(p => p.CategoryName).HasColumnName("CategoryName").IsRequired(true).HasColumnType("text").HasMaxLength(100);
+            builder.Property(p => p.Discription).HasColumnName("Discription").IsRequired(false).HasColumnType("text").HasMaxLength(255);
+            builder.Property(p => p.Active).HasColumnName("Active").IsRequired(true).HasColumnType("bool");
 
             builder.HasMany(m => m.ProductsList).WithOne(o => o.Category).HasForeignKey(k => k.CategoryId);
         }

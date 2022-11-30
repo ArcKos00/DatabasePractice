@@ -66,10 +66,10 @@ namespace DatabaseMigrations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CustomerId"));
 
-                    b.Property<string>("Adddres")
+                    b.Property<string>("Address1")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Adddres");
+                        .HasColumnName("Address1");
 
                     b.Property<string>("Address2")
                         .IsRequired()
@@ -81,10 +81,10 @@ namespace DatabaseMigrations.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Building");
 
-                    b.Property<string>("BuildingAddress")
+                    b.Property<string>("BuildingAddress1")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("BuildingAddress");
+                        .HasColumnName("BuildingAddress1");
 
                     b.Property<string>("BuildingCity")
                         .IsRequired()
@@ -177,10 +177,10 @@ namespace DatabaseMigrations.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Room");
 
-                    b.Property<string>("ShipAddress")
+                    b.Property<string>("ShipAddress1")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("ShipAddress");
+                        .HasColumnName("ShipAddress1");
 
                     b.Property<string>("ShipCity")
                         .IsRequired()
@@ -257,7 +257,7 @@ namespace DatabaseMigrations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderNumber"));
 
-                    b.Property<decimal>("Price")
+                    b.Property<float>("Price")
                         .HasColumnType("numeric")
                         .HasColumnName("Price");
 
@@ -278,7 +278,7 @@ namespace DatabaseMigrations.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("Size");
 
-                    b.Property<decimal>("Total")
+                    b.Property<float>("Total")
                         .HasColumnType("numeric")
                         .HasColumnName("Total");
 
@@ -508,7 +508,7 @@ namespace DatabaseMigrations.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("SupplierId");
 
-                    b.Property<decimal>("UnitPrice")
+                    b.Property<float>("UnitPrice")
                         .HasColumnType("numeric")
                         .HasColumnName("UnitPrice");
 
@@ -569,10 +569,10 @@ namespace DatabaseMigrations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SupplierId"));
 
-                    b.Property<string>("Adddres")
+                    b.Property<string>("Address1")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("Adddres");
+                        .HasColumnName("Address1");
 
                     b.Property<string>("Address2")
                         .IsRequired()

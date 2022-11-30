@@ -19,22 +19,21 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
-        public async Task<int> AddOrderDetailsAsync(decimal price, float discount, decimal total, int orderId, int productId)
+        public async Task<int> AddOrderDetailsAsync(float price, float discount, OrderEntity order, ProductEntity product)
         {
-            var orderDetail = new OrderDetailEntity()
+            var orderDetail = await _dbContext.OrderDetails.AddAsync(new OrderDetailEntity()
             {
                 Price = price,
                 Discount = discount,
-                Total = total,
-                OrderNumber = orderId,
-                ProductId = productId,
-                OrderId = orderId
-            };
-
-            await _dbContext.AddAsync(orderDetail);
+                Total = price * (discount / 100),
+                OrderNumber = order.OrderNumber,
+                ProductId = product.ProductId,
+                OrderId = order.OrderId,
+                Order = order,
+                Product = product
+            });
             await _dbContext.SaveChangesAsync();
-
-            return orderDetail.OrderDetailId;
+            return orderDetail.Entity.OrderDetailId;
         }
 
         public async Task<bool> DeleteOrderDetailsAsync(int detailId)

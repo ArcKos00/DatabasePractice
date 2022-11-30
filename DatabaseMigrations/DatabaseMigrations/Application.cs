@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,18 +40,53 @@ namespace DatabaseMigrations
             _supplier = supplier;
         }
 
-        public void Start()
+        public async Task Start()
         {
-            Console.WriteLine("Hello World!");
-            var customer1 = _customer.AddCustomerAsync("st.Shevchenko", "sampla@ukr.net", "Volod'ka", "Zelensky", "+380004245324", "KVN95");
-            var category1 = _category.AddCategotyAsync("SomeCategory", "Sample", true);
-            var supplier1 = _supplier.AddSupplierAsync("SomeCompany", "Peter", "+380884834843", "bebka@ukr.net", new List<Product>());
-            var orderDetails1 = _orderDetails.AddOrderDetailsAsync(15, 30f)
-            var order1 = _order.AddOrderAsync
-            var payment1 = _payment.AddPaymentAsync
-                var product1 = _product.AddProductAsync
-                var product2 = _product.AddProductAsync
-                var shipper1 = _shipper.AddShipperAsync
+            var category1 = await _category.AddCategotyAsync("Socks", "Sample", new List<Product>(), true);
+            var customer1 = await _customer.AddCustomerAsync("st.Shevchenko", "sampla@ukr.net", "Volod'ka", "Zelensky", "+380004245324", "KVN95", new List<Order>());
+            var shipper1 = await _shipper.AddShipperAsync("Vasyl", "+38094949492", new List<Order>());
+            var order1 = await _order.AddOrderAsync(new Customer(), new List<OrderDetail>(), new Shipper(), new Payment(), 1);
+            var product1 = await _product.AddProductAsync("Socks", "Nice Socks from Zhitomir", new Supplier(), new Category(), 20f, 30f, new List<OrderDetail>());
+            var supplier1 = await _supplier.AddSupplierAsync("SomeCompany", "Peter", "+380884834843", "bebka@ukr.net", new List<Product>());
+
+            var product2 = await _product.AddProductAsync("Water", "Water from Mirgorod", new Supplier(), new Category(), 30f, 0, new List<OrderDetail>());
+            var category2 = await _category.AddCategotyAsync("Water", "Nice Water", new List<Product>(), true);
+
+            // Update Order
+            var order = await _order.GetOrderASync(order1) !;
+            if (order != null)
+            {
+                var payment1 = await _payment.AddPaymentAsync("card", new List<Order>() { order });
+                order.Payment = await _payment.GetPaymentAsync(payment1) !;
+                await _order.UpdateOrder(order1, order);
+            }
+
+            // Update products in first Category
+            var category1Obj = await _category.GetCategoryAsync(category1) !;
+            if (category1Obj != null)
+            {
+                var product1Obj = await _product.GetProductAsync(product1) !;
+                var products = new List<Product>(category1Obj.Products!) { product1Obj! };
+                category1Obj.Products = products;
+                await _category.UpdateCategoryAsync(category1, category1Obj);
+            }
+
+            // Update products in second Category
+            var category2Obj = await _category.GetCategoryAsync(category2) !;
+            if (category2Obj != null)
+            {
+                var product1Obj = await _product.GetProductAsync(product1) !;
+                var products = new List<Product>(category2Obj.Products!) { product1Obj! };
+                category2Obj.Products = products;
+                await _category.UpdateCategoryAsync(category2, category2Obj);
+            }
+
+            // Getting a list product categories
+            var categories = await _product.GetCategoryListAsync(product1);
+            foreach (var category in categories!)
+            {
+                Console.WriteLine(category);
+            }
         }
     }
 }

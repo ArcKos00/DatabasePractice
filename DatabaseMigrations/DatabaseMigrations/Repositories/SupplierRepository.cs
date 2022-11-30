@@ -28,8 +28,10 @@ namespace DatabaseMigrations.Repositories
                 Phone = phone,
                 Email = email,
             });
-            await _dbContext.AddRangeAsync(products.Select(s => new ProductEntity()
+
+            await _dbContext.Products.AddRangeAsync(products.Select(s => new ProductEntity()
             {
+                ProductId = s.ProductId,
                 ProductName = s.ProductName,
                 ProductDiscription = s.ProductDiscription,
                 SupplierId = entity.Entity.SupplierId,
@@ -39,7 +41,10 @@ namespace DatabaseMigrations.Repositories
                 Discount = s.Discount,
                 CurrentOrder = s.CurrentOrder,
                 Details = s.Details,
+                Category = s.Category,
+                Supplier = s.Supplier
             }));
+
             await _dbContext.SaveChangesAsync();
             return entity.Entity.SupplierId;
         }

@@ -27,11 +27,27 @@ namespace DatabaseMigrations.Services
             _logger = loggerService;
         }
 
-        public async Task<int> AddCategotyAsync(string categoryName, string discription, bool isActive = false)
+        public async Task<int> AddCategotyAsync(string categoryName, string discription, IEnumerable<Product> products, bool isActive = false)
         {
             return await ExecuteSafeAsync<int>(async () =>
             {
-                return await _categoryRepository.AddCategoryAsync(categoryName, discription, isActive);
+                return await _categoryRepository.AddCategoryAsync(
+                    categoryName,
+                    discription,
+                    products.Select(s => new ProductEntity()
+                    {
+                        ProductId = s.Id,
+                        ProductName = s.ProductName,
+                        ProductDiscription = s.ProductDescription,
+                        SupplierId = s.Supplierid,
+                        CategoryId = s.CategoryId,
+                        UnitPrice = s.Price,
+                        Discount = s.Discount,
+                        ProductAvailable = s.Available,
+                        CurrentOrder = s.CurrentOrder,
+                    })
+                    .ToList(),
+                    isActive);
             });
         }
 

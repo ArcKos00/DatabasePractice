@@ -31,11 +31,14 @@ namespace DatabaseMigrations.Repositories
                 OrderId = s.OrderId,
                 CustomerId = s.CustomerId,
                 OrderNumber = s.OrderNumber,
-                Details = s.Details,
                 OrderDate = s.OrderDate,
+                Details = s.Details,
                 PaymentId = s.PaymentId,
+                Pay = s.Pay,
                 Paid = s.Paid,
                 ShipperId = entity.Entity.ShipperId,
+                Shipper = s.Shipper,
+                Customer = s.Customer
             }));
 
             await _dbContext.SaveChangesAsync();

@@ -9,7 +9,7 @@ namespace DatabaseMigrations.Repositories.Abstractions
 {
     public interface ICategoryRepository
     {
-        public Task<int> AddCategoryAsync(string categoryName, string discription, bool isActive = false);
+        public Task<int> AddCategoryAsync(string categoryName, string discription, List<ProductEntity> products, bool isActive = false);
         public Task<CategoryEntity?> GetCategoryByIdAsync(int categoryId);
         public Task<CategoryEntity?> GetCategoryByNameAsync(string categoryName);
         public Task<bool> UpdateCategoryByIdAsync(int categoryId, CategoryEntity newCategory);

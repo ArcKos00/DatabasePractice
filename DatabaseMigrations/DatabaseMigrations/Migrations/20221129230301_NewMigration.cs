@@ -10,7 +10,7 @@ namespace DatabaseMigrations.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Adddres",
+                name: "Address1",
                 table: "Suppliers");
 
             migrationBuilder.DropColumn(
@@ -234,7 +234,7 @@ namespace DatabaseMigrations.Migrations
                 table: "Customers");
 
             migrationBuilder.DropColumn(
-                name: "BuildingAddress",
+                name: "BuildingAddress1",
                 table: "Customers");
 
             migrationBuilder.DropColumn(
@@ -290,7 +290,7 @@ namespace DatabaseMigrations.Migrations
                 table: "Customers");
 
             migrationBuilder.DropColumn(
-                name: "ShipAddress",
+                name: "ShipAddress1",
                 table: "Customers");
 
             migrationBuilder.DropColumn(
@@ -333,7 +333,7 @@ namespace DatabaseMigrations.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Adddres",
+                name: "Address1",
                 table: "Suppliers",
                 type: "text",
                 nullable: false,
@@ -725,7 +725,7 @@ namespace DatabaseMigrations.Migrations
                 defaultValue: " ");
 
             migrationBuilder.AddColumn<string>(
-                name: "BuildingAddress",
+                name: "BuildingAddress1",
                 table: "Customers",
                 type: "text",
                 nullable: false,
@@ -823,7 +823,7 @@ namespace DatabaseMigrations.Migrations
                 defaultValue: " ");
 
             migrationBuilder.AddColumn<string>(
-                name: "ShipAddress",
+                name: "ShipAddress1",
                 table: "Customers",
                 type: "text",
                 nullable: false,

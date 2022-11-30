@@ -27,20 +27,40 @@ namespace DatabaseMigrations.Services
             _logger = logger;
         }
 
-        public async Task<int> AddProductAsync(string name, string discription, int supplierId, int categoryId, decimal unitPrice, float discount, IEnumerable<OrderDetail> inOrders)
+        public async Task<int> AddProductAsync(string name, string discription, Supplier supplier, Category category, float unitPrice, float discount, IEnumerable<OrderDetail> inOrders)
         {
             return await ExecuteSafeAsync<int>(async () =>
             {
-                return await _productRepository.AddProductAsync(name, discription, supplierId, categoryId, unitPrice, discount, inOrders.Select(s => new OrderDetailEntity()
-                {
-                    OrderDetailId = s.Id,
-                    OrderId = s.Order!.Id,
-                    ProductId = s.ProductInOrder!.Id,
-                    OrderNumber = s.OrderNumber,
-                    Price = s.Price,
-                    Discount = s.Discount,
-                    Total = s.Total,
-                }).ToList());
+                return await _productRepository.AddProductAsync(
+                    name,
+                    discription,
+                    unitPrice,
+                    discount,
+                    new CategoryEntity()
+                    {
+                        CategoryId = category.Id,
+                        CategoryName = category.CategoryName,
+                        Discription = category.Discription,
+                        Active = category.Active
+                    },
+                    new SupplierEntity()
+                    {
+                        SupplierId = supplier.Id,
+                        CompanyName = supplier.CompanyName,
+                        ContactFName = supplier.ContactFName,
+                        Phone = supplier.Phone,
+                        Email = supplier.Email
+                    },
+                    inOrders.Select(s => new OrderDetailEntity()
+                    {
+                        OrderDetailId = s.Id,
+                        OrderId = s.Order!.Id,
+                        ProductId = s.ProductInOrder!.Id,
+                        OrderNumber = s.OrderNumber,
+                        Price = s.Price,
+                        Discount = s.Discount,
+                        Total = s.Total,
+                    }).ToList());
             });
         }
 
@@ -120,6 +140,17 @@ namespace DatabaseMigrations.Services
                 Discription = s.Discription,
                 Active = s.Active,
             }).ToList();
+        }
+
+        public async Task<IEnumerable<Category>?> GetCategoryListAsync(int id)
+        {
+            var product = await GetProductAsync(id);
+            if (product == null)
+            {
+                return new List<Category>();
+            }
+
+            return await GetCategoryListAsync(product);
         }
     }
 }

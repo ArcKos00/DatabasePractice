@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using CodeFirst.Entities;
@@ -19,14 +20,16 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
-        public async Task<int> AddProductAsync(string name, string discription, int supplierId, int categoryId, decimal unitPrice, float discount, List<OrderDetailEntity> inOrders)
+        public async Task<int> AddProductAsync(string name, string discription, float unitPrice, float discount, CategoryEntity category, SupplierEntity supplier, List<OrderDetailEntity> inOrders)
         {
             var entity = await _dbContext.Products.AddAsync(new ProductEntity()
             {
                 ProductName = name,
                 ProductDiscription = discription,
-                SupplierId = supplierId,
-                CategoryId = categoryId,
+                Supplier = supplier,
+                SupplierId = supplier.SupplierId,
+                Category = category,
+                CategoryId = category.CategoryId,
                 UnitPrice = unitPrice,
                 Discount = discount,
             });
@@ -38,6 +41,10 @@ namespace DatabaseMigrations.Repositories
                 Price = entity.Entity.UnitPrice,
                 Discount = entity.Entity.Discount,
                 Total = s.Total,
+                OrderDetailId = s.OrderDetailId,
+                OrderNumber = s.OrderNumber,
+                Order = s.Order,
+                Product = s.Product
             }));
 
             await _dbContext.SaveChangesAsync();

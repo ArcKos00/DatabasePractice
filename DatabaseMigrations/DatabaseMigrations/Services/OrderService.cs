@@ -26,11 +26,11 @@ namespace DatabaseMigrations.Services
             _logger = logger;
         }
 
-        public async Task<int> AddOrderAsync(int customerId, IEnumerable<OrderDetail> orderDetails, int shipperId, int payId, int orderNumber, bool paid)
+        public async Task<int> AddOrderAsync(Customer customer, IEnumerable<OrderDetail> orderDetails, Shipper shipper, Payment pay, int orderNumber)
         {
             return await ExecuteSafeAsync<int>(async () =>
             {
-                return await _orderRepository.AddOrderAsync(customerId, shipperId, payId, orderNumber, paid, orderDetails.Select(s => new OrderDetailEntity()
+                return await _orderRepository.AddOrderAsync(customer.Id, shipper.Id, pay.Id, orderNumber, orderDetails.Select(s => new OrderDetailEntity()
                 {
                     OrderDetailId = s.Id,
                     OrderId = s.Order!.Id,
@@ -59,7 +59,7 @@ namespace DatabaseMigrations.Services
                 {
                     FirstName = result.Customer!.FirstName,
                     LastName = result.Customer!.LastName,
-                    Address = result.Customer!.Adddres,
+                    Address1 = result.Customer!.Address1,
                     Phone = result.Customer!.Phone,
                     Email = result.Customer!.Email,
                     Password = result.Customer!.Password,

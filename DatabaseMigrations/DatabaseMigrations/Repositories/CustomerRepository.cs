@@ -19,23 +19,36 @@ namespace DatabaseMigrations.Repositories
             _dbContext = context.DbContext;
         }
 
-        public async Task<int> AddCustomerAsync(string address, string email, string firstName, string secondName, string phone, string password)
+        public async Task<int> AddCustomerAsync(string address, string email, string firstName, string secondName, string phone, string password, List<OrderEntity> orders)
         {
-            var customer = new CustomerEntity
+            var customer = await _dbContext.Customers.AddAsync(new CustomerEntity()
             {
                 FirstName = firstName,
                 LastName = secondName,
-                Adddres = address,
+                Address1 = address,
                 Phone = phone,
                 Email = email,
                 Password = password,
-                DateEntered = DateTime.Now
-            };
+                DateEntered = DateOnly.FromDateTime(DateTime.Now)
+            });
 
-            await _dbContext.Customers.AddAsync(customer);
+            await _dbContext.Orders.AddRangeAsync(orders.Select(s => new OrderEntity()
+            {
+                OrderId = s.OrderId,
+                CustomerId = customer.Entity.CustomerId,
+                OrderNumber = s.OrderNumber,
+                OrderDate = s.OrderDate,
+                PaymentId = s.PaymentId,
+                Paid = s.Paid,
+                ShipperId = s.ShipperId,
+                Shipper = s.Shipper,
+                Customer = s.Customer,
+                Details = s.Details,
+                Pay = s.Pay
+            }));
+
             await _dbContext.SaveChangesAsync();
-
-            return customer.CustomerId;
+            return customer.Entity.CustomerId;
         }
 
         public async Task<bool> DeleteCustomerByIdAsync(int customerId)

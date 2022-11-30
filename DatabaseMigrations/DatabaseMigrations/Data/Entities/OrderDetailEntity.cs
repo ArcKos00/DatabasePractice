@@ -17,8 +17,8 @@ namespace CodeFirst.Entities
         public ProductEntity Product { get; set; } = null!;
 
         public int OrderNumber { get; set; }
-        public decimal Price { get; set; }
+        public float Price { get; set; }
         public float Discount { get; set; }
-        public decimal Total { get; set; }
+        public float Total { get; set; }
     }
 }

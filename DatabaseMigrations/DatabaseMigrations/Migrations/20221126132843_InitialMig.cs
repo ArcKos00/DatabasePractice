@@ -37,7 +37,7 @@ namespace DatabaseMigrations.Migrations
                     Class = table.Column<string>(type: "text", nullable: false),
                     Room = table.Column<string>(type: "text", nullable: false),
                     Building = table.Column<string>(type: "text", nullable: false),
-                    Adddres = table.Column<string>(type: "text", nullable: false),
+                    Address1 = table.Column<string>(type: "text", nullable: false),
                     Address2 = table.Column<string>(type: "text", nullable: false),
                     City = table.Column<string>(type: "text", nullable: false),
                     State = table.Column<string>(type: "text", nullable: false),
@@ -51,17 +51,17 @@ namespace DatabaseMigrations.Migrations
                     CreditCardTypeId = table.Column<int>(type: "integer", nullable: false),
                     CardExpMo = table.Column<string>(type: "text", nullable: false),
                     CardExpYr = table.Column<string>(type: "text", nullable: false),
-                    BuildingAddress = table.Column<string>(type: "text", nullable: false),
+                    BuildingAddress1 = table.Column<string>(type: "text", nullable: false),
                     BuildingCity = table.Column<string>(type: "text", nullable: false),
                     Buildingregion = table.Column<string>(type: "text", nullable: false),
                     BuildingPostalCode = table.Column<int>(type: "integer", nullable: false),
                     BuildingCountry = table.Column<string>(type: "text", nullable: false),
-                    ShipAddress = table.Column<string>(type: "text", nullable: false),
+                    ShipAddress1 = table.Column<string>(type: "text", nullable: false),
                     ShipCity = table.Column<string>(type: "text", nullable: false),
                     ShipRegion = table.Column<string>(type: "text", nullable: false),
                     ShipPostalCode = table.Column<int>(type: "integer", nullable: false),
                     ShipCountry = table.Column<string>(type: "text", nullable: false),
-                    DateEntered = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DateEntered = table.Column<DateOnly>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,7 +106,7 @@ namespace DatabaseMigrations.Migrations
                     ContactFName = table.Column<string>(type: "text", nullable: false),
                     ContactLName = table.Column<string>(type: "text", nullable: false),
                     ContactTitle = table.Column<string>(type: "text", nullable: false),
-                    Adddres = table.Column<string>(type: "text", nullable: false),
+                    Address1 = table.Column<string>(type: "text", nullable: false),
                     Address2 = table.Column<string>(type: "text", nullable: false),
                     City = table.Column<string>(type: "text", nullable: false),
                     State = table.Column<string>(type: "text", nullable: false),
@@ -139,11 +139,11 @@ namespace DatabaseMigrations.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     OrderNumber = table.Column<int>(type: "integer", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    OrderDate = table.Column<DateOnly>(type: "timestamp with time zone", nullable: false),
                     PaymentId = table.Column<int>(type: "integer", nullable: false),
                     ShipperId = table.Column<int>(type: "integer", nullable: false),
-                    ShipData = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    RequiredDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ShipData = table.Column<DateOnly>(type: "timestamp with time zone", nullable: false),
+                    RequiredDate = table.Column<DateOnly>(type: "timestamp with time zone", nullable: false),
                     Freight = table.Column<string>(type: "text", nullable: false),
                     SalesTax = table.Column<string>(type: "text", nullable: false),
                     TimeStamp = table.Column<string>(type: "text", nullable: false),
@@ -153,7 +153,7 @@ namespace DatabaseMigrations.Migrations
                     FullFilling = table.Column<bool>(type: "boolean", nullable: false),
                     Deleted = table.Column<bool>(type: "boolean", nullable: false),
                     Paid = table.Column<bool>(type: "boolean", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    PaymentDate = table.Column<DateOnly>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -192,7 +192,7 @@ namespace DatabaseMigrations.Migrations
                     SupplierId = table.Column<int>(type: "integer", nullable: false),
                     CategoryId = table.Column<int>(type: "integer", nullable: false),
                     QuantityPerUnit = table.Column<int>(type: "integer", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    UnitPrice = table.Column<float>(type: "numeric", nullable: false),
                     MSRP = table.Column<string>(type: "text", nullable: false),
                     AvailableSize = table.Column<string>(type: "text", nullable: false),
                     availableColors = table.Column<string>(type: "text", nullable: false),
@@ -237,16 +237,16 @@ namespace DatabaseMigrations.Migrations
                     ProductId = table.Column<int>(type: "integer", nullable: false),
                     OrderNumber = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    Price = table.Column<float>(type: "numeric", nullable: false),
                     Quantity = table.Column<string>(type: "text", nullable: false),
                     Discount = table.Column<float>(type: "real", nullable: false),
-                    Total = table.Column<decimal>(type: "numeric", nullable: false),
+                    Total = table.Column<float>(type: "numeric", nullable: false),
                     IdSKU = table.Column<int>(type: "integer", nullable: false),
                     Size = table.Column<int>(type: "integer", nullable: false),
                     Color = table.Column<string>(type: "text", nullable: false),
                     Fulfilled = table.Column<bool>(type: "boolean", nullable: false),
-                    ShipDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    BillDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    ShipDate = table.Column<DateOnly>(type: "timestamp with time zone", nullable: false),
+                    BillDate = table.Column<DateOnly>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -9,7 +9,7 @@ namespace DatabaseMigrations.Services.Abstractions
 {
     public interface IOrderDetailService
     {
-        public Task<int> AddOrderDetailsAsync(decimal price, float discount, decimal total, int order, int product);
+        public Task<int> AddOrderDetailsAsync(float price, float discount, Order order, Product product);
         public Task<OrderDetail>? GetOrderDetailsAsync(int id);
         public Task DeleteDetailsAsync(int id);
     }

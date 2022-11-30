@@ -16,11 +16,11 @@ namespace CodeFirst.EntityConfigs
             builder.ToTable("Suppliers");
             builder.HasKey(k => k.SupplierId);
 
-            builder.Property(p => p.SupplierId).HasColumnName("SupplierId").IsRequired(true);
-            builder.Property(p => p.CompanyName).HasColumnName("CompanyName").IsRequired(true);
-            builder.Property(p => p.ContactFName).HasColumnName("ContactFName").IsRequired(true);
-            builder.Property(p => p.Phone).HasColumnName("Phone").IsRequired(true);
-            builder.Property(p => p.Email).HasColumnName("Email").IsRequired(true);
+            builder.Property(p => p.SupplierId).HasColumnName("SupplierId").IsRequired(true).HasColumnType("int").ValueGeneratedOnAdd();
+            builder.Property(p => p.CompanyName).HasColumnName("CompanyName").IsRequired(true).HasColumnType("text").HasMaxLength(255);
+            builder.Property(p => p.ContactFName).HasColumnName("ContactFName").IsRequired(true).HasColumnType("text").HasMaxLength(255);
+            builder.Property(p => p.Phone).HasColumnName("Phone").IsRequired(true).HasColumnType("text").HasMaxLength(20);
+            builder.Property(p => p.Email).HasColumnName("Email").IsRequired(true).HasColumnType("text").HasMaxLength(255);
 
             builder.HasMany(m => m.ProductList).WithOne(o => o.Supplier).HasForeignKey(k => k.SupplierId);
         }

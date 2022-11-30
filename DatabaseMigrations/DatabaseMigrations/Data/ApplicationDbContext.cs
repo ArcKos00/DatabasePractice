@@ -35,6 +35,7 @@ namespace DatabaseMigrations
             modelBuilder.ApplyConfiguration(new ProductConfigure());
             modelBuilder.ApplyConfiguration(new ShipperConfigure());
             modelBuilder.ApplyConfiguration(new SupplierConfigure());
+            modelBuilder.UseHiLo();
         }
     }
 }
