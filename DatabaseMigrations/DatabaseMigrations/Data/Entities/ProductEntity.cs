@@ -9,8 +9,8 @@ namespace CodeFirst.Entities
     public class ProductEntity
     {
         public int ProductId { get; set; }
-        public string? ProductName { get; set; }
-        public string? ProductDiscription { get; set; }
+        public string? ProductName { get; set; } = string.Empty;
+        public string? ProductDiscription { get; set; } = string.Empty;
 
         public int SupplierId { get; set; }
         public SupplierEntity Supplier { get; set; } = null!;

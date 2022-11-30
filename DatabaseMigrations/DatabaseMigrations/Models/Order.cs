@@ -18,6 +18,6 @@ namespace DatabaseMigrations.Models
         public bool Paid { get; set; }
         public int ShipperId { get; set; }
         public Shipper Shipper { get; set; } = null!;
-        public IEnumerable<OrderDetail>? Details { get; set; }
+        public IEnumerable<OrderDetail> Details { get; set; } = new List<OrderDetail>();
     }
 }

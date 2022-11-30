@@ -21,7 +21,7 @@ namespace CodeFirst.EntityConfigs
             builder.Property(p => p.ProductId).HasColumnName("ProductId").IsRequired(true).HasColumnType("int");
             builder.Property(p => p.OrderNumber).HasColumnName("OrderNumber").IsRequired(true).HasColumnType("int");
             builder.Property(p => p.Price).HasColumnName("Price").IsRequired(true).HasColumnType("float8");
-            builder.Property(p => p.Discount).HasColumnName("Discount").IsRequired().HasColumnType("float8");
+            builder.Property(p => p.Discount).HasColumnName("Discount").IsRequired(true).HasColumnType("float8");
             builder.Property(p => p.Total).HasColumnName("Total").IsRequired(true).HasColumnType("float8");
 
             builder.HasOne(o => o.Order).WithMany(m => m.Details).HasForeignKey(k => k.OrderNumber);

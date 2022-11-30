@@ -33,12 +33,12 @@ namespace DatabaseMigrations.Services
                 return await _paymentRepository.AddPaymentAsync(payType, orders.Select(s => new OrderEntity()
                 {
                     OrderId = s.Id,
-                    CustomerId = s.CustomerOrder!.Id,
+                    CustomerId = s.CustomerOrder.Id,
                     OrderNumber = s.OrderNumber,
                     OrderDate = s.OrderDate,
-                    PaymentId = s.Payment!.Id,
+                    PaymentId = s.Payment.Id,
                     Paid = s.Paid,
-                    ShipperId = s.Shipper!.Id,
+                    ShipperId = s.Shipper!.Id
                 }).ToList());
             });
         }

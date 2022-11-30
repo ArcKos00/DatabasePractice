@@ -11,7 +11,7 @@ namespace CodeFirst.Entities
         public int ShipperId { get; set; }
         public List<OrderEntity> OrderList { get; set; } = new List<OrderEntity>();
 
-        public string? CompanyName { get; set; }
-        public string? Phone { get; set; }
+        public string? CompanyName { get; set; } = string.Empty;
+        public string? Phone { get; set; } = string.Empty;
     }
 }

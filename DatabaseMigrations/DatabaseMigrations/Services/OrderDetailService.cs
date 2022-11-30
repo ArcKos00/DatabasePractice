@@ -80,20 +80,20 @@ namespace DatabaseMigrations.Services
                 ProductInOrder = new Product()
                 {
                     Id = result.ProductId,
-                    ProductName = result.Product!.ProductName,
-                    CategoryId = result.Product!.CategoryId,
+                    ProductName = result.Product.ProductName,
+                    CategoryId = result.Product.CategoryId,
                     Price = result.Price,
                     Discount = result.Discount,
                 },
                 Order = new Order()
                 {
                     Id = result.OrderId,
-                    CustomerId = result.Order!.CustomerId,
+                    CustomerId = result.Order.CustomerId,
                     OrderNumber = result.OrderNumber,
-                    OrderDate = result.Order!.OrderDate,
-                    PaymentId = result.Order!.PaymentId,
+                    OrderDate = result.Order.OrderDate,
+                    PaymentId = result.Order.PaymentId,
                     Paid = result.Order.Paid,
-                    ShipperId = result.Order!.ShipperId,
+                    ShipperId = result.Order.ShipperId,
                 }
             };
         }

@@ -18,16 +18,19 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
-        public async Task<int> AddOrderAsync(int customerId, int shipperId, int payId, int orderNumber, List<OrderDetailEntity> orderDetails, bool paid = false)
+        public async Task<int> AddOrderAsync(CustomerEntity customer, ShipperEntity shipper, PaymentEntity pay, int orderNumber, List<OrderDetailEntity> orderDetails, bool paid = false)
         {
             var order = await _dbContext.Orders.AddAsync(new OrderEntity()
             {
-                CustomerId = customerId,
+                CustomerId = customer.CustomerId,
                 OrderNumber = orderNumber,
                 OrderDate = DateOnly.FromDateTime(DateTime.Now),
                 Paid = paid,
-                PaymentId = payId,
-                ShipperId = shipperId
+                PaymentId = pay.PaymentId,
+                ShipperId = shipper.ShipperId,
+                Pay = pay,
+                Customer = customer,
+                Shipper = shipper
             });
 
             await _dbContext.OrderDetails.AddRangeAsync(orderDetails.Select(s => new OrderDetailEntity()

@@ -11,7 +11,7 @@ namespace CodeFirst.Entities
         public int OrderId { get; set; }
 
         public int CustomerId { get; set; }
-        public CustomerEntity Customer { get; set; } = null!;
+        public CustomerEntity? Customer { get; set; } = null;
 
         public int OrderNumber { get; set; }
         public List<OrderDetailEntity> Details { get; set; } = new List<OrderDetailEntity>();

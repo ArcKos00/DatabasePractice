@@ -65,7 +65,7 @@ namespace DatabaseMigrations.Services
                 Email = result.Email,
                 Phone = result.Phone,
                 DateEntry = result.DateEntered,
-                OrderList = result?.OrderList.Select(s => new Order()
+                OrderList = result.OrderList.Select(s => new Order()
                 {
                     Id = s.OrderId,
                     OrderNumber = s.OrderNumber,

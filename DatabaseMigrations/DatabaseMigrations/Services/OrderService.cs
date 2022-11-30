@@ -30,16 +30,41 @@ namespace DatabaseMigrations.Services
         {
             return await ExecuteSafeAsync<int>(async () =>
             {
-                return await _orderRepository.AddOrderAsync(customer.Id, shipper.Id, pay.Id, orderNumber, orderDetails.Select(s => new OrderDetailEntity()
-                {
-                    OrderDetailId = s.Id,
-                    OrderId = s.Order!.Id,
-                    ProductId = s.ProductInOrder!.Id,
-                    OrderNumber = s.OrderNumber,
-                    Price = s.Price,
-                    Discount = s.Discount,
-                    Total = s.Total,
-                }).ToList());
+                return await _orderRepository.AddOrderAsync(
+                    new CustomerEntity()
+                    {
+                        CustomerId = customer.Id,
+                        FirstName = customer.FirstName,
+                        LastName = customer.LastName,
+                        Address1 = customer.Address1,
+                        Phone = customer.Phone,
+                        Email = customer.Email,
+                        Password = customer.Password,
+                        DateEntered = customer.DateEntry
+                    },
+                    new ShipperEntity()
+                    {
+                        ShipperId = shipper.Id,
+                        CompanyName = shipper.CompanyName,
+                        Phone = shipper.Phone
+                    },
+                    new PaymentEntity()
+                    {
+                        PaymentId = pay.Id,
+                        PaymentType = pay.PaymentType,
+                        Allowed = pay.Allowed
+                    },
+                    orderNumber,
+                    orderDetails.Select(s => new OrderDetailEntity()
+                    {
+                        OrderDetailId = s.Id,
+                        OrderId = s.Order!.Id,
+                        ProductId = s.ProductInOrder!.Id,
+                        OrderNumber = s.OrderNumber,
+                        Price = s.Price,
+                        Discount = s.Discount,
+                        Total = s.Total,
+                    }).ToList());
             });
         }
 
@@ -49,6 +74,7 @@ namespace DatabaseMigrations.Services
             if (result == null)
             {
                 _logger.LogError($"Cannot found Order with id: {id}");
+                return null!;
             }
 
             return new Order()
@@ -57,12 +83,12 @@ namespace DatabaseMigrations.Services
                 CustomerId = result!.CustomerId,
                 CustomerOrder = new Customer()
                 {
-                    FirstName = result.Customer!.FirstName,
-                    LastName = result.Customer!.LastName,
-                    Address1 = result.Customer!.Address1,
-                    Phone = result.Customer!.Phone,
-                    Email = result.Customer!.Email,
-                    Password = result.Customer!.Password,
+                    FirstName = result.Customer?.FirstName,
+                    LastName = result.Customer?.LastName,
+                    Address1 = result.Customer?.Address1,
+                    Phone = result.Customer?.Phone,
+                    Email = result.Customer?.Email,
+                    Password = result.Customer?.Password,
                     DateEntry = result.Customer!.DateEntered
                 },
                 OrderNumber = result!.OrderNumber,
@@ -85,12 +111,12 @@ namespace DatabaseMigrations.Services
                 var result = await _orderRepository.UpdateOrderAsync(id, new OrderEntity()
                 {
                     OrderId = order.Id,
-                    CustomerId = order.CustomerOrder!.Id,
+                    CustomerId = order.CustomerId,
                     OrderNumber = order.OrderNumber,
                     OrderDate = order.OrderDate,
-                    PaymentId = order.Payment!.Id,
+                    PaymentId = order.PaymentId,
                     Paid = order.Paid,
-                    ShipperId = order.Shipper!.Id,
+                    ShipperId = order.ShipperId,
                 });
 
                 if (result == false)

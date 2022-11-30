@@ -9,10 +9,10 @@ namespace DatabaseMigrations.Models
     public class Supplier
     {
         public int Id { get; set; }
-        public string? CompanyName { get; set; }
-        public string? ContactFName { get; set; }
-        public string? Email { get; set; }
-        public string? Phone { get; set; }
-        public IEnumerable<Product>? Products { get; set; }
+        public string? CompanyName { get; set; } = string.Empty;
+        public string? ContactFName { get; set; } = string.Empty;
+        public string? Email { get; set; } = string.Empty;
+        public string? Phone { get; set; } = string.Empty;
+        public IEnumerable<Product> Products { get; set; } = new List<Product>();
     }
 }

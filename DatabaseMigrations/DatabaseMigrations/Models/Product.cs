@@ -9,8 +9,8 @@ namespace DatabaseMigrations.Models
     public class Product
     {
         public int Id { get; set; }
-        public string? ProductName { get; set; }
-        public string? ProductDescription { get; set; }
+        public string? ProductName { get; set; } = string.Empty;
+        public string? ProductDescription { get; set; } = string.Empty;
         public int CategoryId { get; set; }
         public int Supplierid { get; set; }
         public float Price { get; set; }
@@ -19,6 +19,6 @@ namespace DatabaseMigrations.Models
         public int CurrentOrder { get; set; }
         public Supplier Supplier { get; set; } = null!;
         public Category Category { get; set; } = null!;
-        public IEnumerable<OrderDetail>? Details { get; set; }
+        public IEnumerable<OrderDetail> Details { get; set; } = new List<OrderDetail>();
     }
 }

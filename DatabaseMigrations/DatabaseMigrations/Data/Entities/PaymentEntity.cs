@@ -11,7 +11,7 @@ namespace CodeFirst.Entities
         public int PaymentId { get; set; }
         public List<OrderEntity> OrderList { get; set; } = new List<OrderEntity>();
 
-        public string? PaymentType { get; set; }
+        public string? PaymentType { get; set; } = string.Empty;
         public bool Allowed { get; set; }
     }
 }

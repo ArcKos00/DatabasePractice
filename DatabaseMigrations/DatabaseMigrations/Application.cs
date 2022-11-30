@@ -56,7 +56,7 @@ namespace DatabaseMigrations
             var order = await _order.GetOrderASync(order1) !;
             if (order != null)
             {
-                var payment1 = await _payment.AddPaymentAsync("card", new List<Order>() { order });
+                var payment1 = await _payment.AddPaymentAsync("card", new List<Order>());
                 order.Payment = await _payment.GetPaymentAsync(payment1) !;
                 await _order.UpdateOrder(order1, order);
             }
@@ -87,6 +87,8 @@ namespace DatabaseMigrations
             {
                 Console.WriteLine(category);
             }
+
+            Console.ReadLine();
         }
     }
 }
