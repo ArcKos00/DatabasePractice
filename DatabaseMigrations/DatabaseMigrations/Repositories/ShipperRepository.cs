@@ -18,6 +18,13 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
+        public async Task<int> AddShipperAsync(ShipperEntity shipper)
+        {
+            var entity = await _dbContext.Shippers.AddAsync(shipper);
+            await _dbContext.SaveChangesAsync();
+            return entity.Entity.Id;
+        }
+
         public async Task<int> AddShipperAsync(string name, string phone, List<OrderEntity> orders)
         {
             var entity = await _dbContext.Shippers.AddAsync(new ShipperEntity()
@@ -28,7 +35,7 @@ namespace DatabaseMigrations.Repositories
 
             await _dbContext.Orders.AddRangeAsync(orders.Select(s => new OrderEntity()
             {
-                OrderId = s.OrderId,
+                Id = s.Id,
                 CustomerId = s.CustomerId,
                 OrderNumber = s.OrderNumber,
                 OrderDate = s.OrderDate,
@@ -36,42 +43,76 @@ namespace DatabaseMigrations.Repositories
                 PaymentId = s.PaymentId,
                 Pay = s.Pay,
                 Paid = s.Paid,
-                ShipperId = entity.Entity.ShipperId,
+                ShipperId = entity.Entity.Id,
                 Shipper = s.Shipper,
                 Customer = s.Customer
             }));
 
             await _dbContext.SaveChangesAsync();
-            return entity.Entity.ShipperId;
+            return entity.Entity.Id;
         }
 
-        public async Task<ShipperEntity?> GetShipperByIdAsync(int entityId)
+        public async Task<ShipperEntity?> GetShipperAsync(int entityId)
         {
-            return await _dbContext.Shippers.FirstOrDefaultAsync(f => f.ShipperId == entityId);
+            return await _dbContext.Shippers.FirstOrDefaultAsync(f => f.Id == entityId);
         }
 
-        public async Task<bool> DeleteShipperAsync(int entityId)
+        public async Task<List<OrderEntity>?> GetShipperOrdersAsync(int entityId)
         {
-            var entity = await GetShipperByIdAsync(entityId);
-            if (entity == null)
-            {
-                return false;
-            }
-
-            _dbContext.Entry(entity).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return true;
+            var result = await _dbContext.Shippers.Include(i => i.OrderList).FirstOrDefaultAsync(f => f.Id == entityId);
+            return result?.OrderList;
         }
 
-        public async Task<bool> UpdateShipperAsync(int entityId, ShipperEntity newEntity)
+        public async Task<bool> UpdateShipperDataAsync(int entityId, ShipperEntity newEntity)
         {
-            var entity = await GetShipperByIdAsync(entityId);
+            var entity = await GetShipperAsync(entityId);
             if (entity == null)
             {
                 return false;
             }
 
             _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateShipperNameAsync(int entityId, string companyName)
+        {
+            var entity = await GetShipperAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.CompanyName = companyName;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateShipperPhoneAsync(int entityId, string phone)
+        {
+            var entity = await GetShipperAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Phone = phone;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteShipperAsync(int entityId)
+        {
+            var entity = await GetShipperAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return true;
         }

@@ -32,7 +32,7 @@ namespace DatabaseMigrations.Services
             {
                 return await _paymentRepository.AddPaymentAsync(payType, orders.Select(s => new OrderEntity()
                 {
-                    OrderId = s.Id,
+                    Id = s.Id,
                     CustomerId = s.CustomerOrder.Id,
                     OrderNumber = s.OrderNumber,
                     OrderDate = s.OrderDate,
@@ -45,7 +45,7 @@ namespace DatabaseMigrations.Services
 
         public async Task<Payment>? GetPaymentAsync(int id)
         {
-            var result = await _paymentRepository.GetPaymentByIdAsync(id);
+            var result = await _paymentRepository.GetPaymentAsync(id);
             if (result == null)
             {
                 _logger.LogError($"Cannot found payment no{id}");
@@ -54,7 +54,7 @@ namespace DatabaseMigrations.Services
 
             return new Payment()
             {
-                Id = result.PaymentId,
+                Id = result.Id,
                 PaymentType = result.PaymentType,
                 Allowed = result.Allowed
             };
@@ -64,12 +64,12 @@ namespace DatabaseMigrations.Services
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _paymentRepository.UpdatePaymentAsync(id, new PaymentEntity()
+                var result = await _paymentRepository.UpdatePaymentDataAsync(id, new PaymentEntity()
                 {
-                    PaymentId = payment.Id,
+                    Id = payment.Id,
                     OrderList = payment.Orders!.Select(s => new OrderEntity()
                     {
-                        OrderId = s.Id,
+                        Id = s.Id,
                         CustomerId = s.CustomerOrder!.Id,
                         OrderNumber = s.OrderNumber,
                         OrderDate = s.OrderDate,
@@ -80,6 +80,10 @@ namespace DatabaseMigrations.Services
                     PaymentType = payment.PaymentType,
                     Allowed = payment!.Allowed
                 });
+                if (!result)
+                {
+                    _logger.LogWarning("Cannot update");
+                }
             });
         }
 
@@ -88,7 +92,7 @@ namespace DatabaseMigrations.Services
             await ExecuteSafeAsync(async () =>
             {
                 var result = await _paymentRepository.DeletePaymentAsync(id);
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogError($"Cannot delete this payment");
                 }

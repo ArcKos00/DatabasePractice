@@ -33,7 +33,7 @@ namespace DatabaseMigrations.Services
                 return await _orderRepository.AddOrderAsync(
                     new CustomerEntity()
                     {
-                        CustomerId = customer.Id,
+                        Id = customer.Id,
                         FirstName = customer.FirstName,
                         LastName = customer.LastName,
                         Address1 = customer.Address1,
@@ -44,20 +44,20 @@ namespace DatabaseMigrations.Services
                     },
                     new ShipperEntity()
                     {
-                        ShipperId = shipper.Id,
+                        Id = shipper.Id,
                         CompanyName = shipper.CompanyName,
                         Phone = shipper.Phone
                     },
                     new PaymentEntity()
                     {
-                        PaymentId = pay.Id,
+                        Id = pay.Id,
                         PaymentType = pay.PaymentType,
                         Allowed = pay.Allowed
                     },
                     orderNumber,
                     orderDetails.Select(s => new OrderDetailEntity()
                     {
-                        OrderDetailId = s.Id,
+                        Id = s.Id,
                         OrderId = s.Order!.Id,
                         ProductId = s.ProductInOrder!.Id,
                         OrderNumber = s.OrderNumber,
@@ -70,47 +70,36 @@ namespace DatabaseMigrations.Services
 
         public async Task<Order>? GetOrderASync(int id)
         {
-            var result = await _orderRepository.GetOrderByIdAsync(id);
+            var result = await _orderRepository.GetOrderAsync(id);
             if (result == null)
             {
                 _logger.LogError($"Cannot found Order with id: {id}");
                 return null!;
             }
-
-            return new Order()
+            else
             {
-                Id = result!.OrderId,
-                CustomerId = result!.CustomerId,
-                CustomerOrder = new Customer()
+                return new Order()
                 {
-                    FirstName = result.Customer?.FirstName,
-                    LastName = result.Customer?.LastName,
-                    Address1 = result.Customer?.Address1,
-                    Phone = result.Customer?.Phone,
-                    Email = result.Customer?.Email,
-                    Password = result.Customer?.Password,
-                    DateEntry = result.Customer!.DateEntered
-                },
-                OrderNumber = result!.OrderNumber,
-                OrderDate = result!.OrderDate,
-                PaymentId = result!.PaymentId,
-                Payment = new Payment()
-                {
-                    Id = result!.PaymentId,
-                    Allowed = result.Paid
-                },
-                Paid = result!.Paid,
-                ShipperId = result!.ShipperId,
-            };
+                    Id = result.Id,
+                    CustomerId = result.CustomerId,
+                    CustomerOrder = new Customer(),
+                    OrderNumber = result!.OrderNumber,
+                    OrderDate = result!.OrderDate,
+                    PaymentId = result!.PaymentId,
+                    Payment = new Payment(),
+                    Paid = result!.Paid,
+                    ShipperId = result!.ShipperId,
+                };
+            }
         }
 
         public async Task UpdateOrder(int id, Order order)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _orderRepository.UpdateOrderAsync(id, new OrderEntity()
+                var result = await _orderRepository.UpdateOrderDataAsync(id, new OrderEntity()
                 {
-                    OrderId = order.Id,
+                    Id = order.Id,
                     CustomerId = order.CustomerId,
                     OrderNumber = order.OrderNumber,
                     OrderDate = order.OrderDate,
@@ -119,7 +108,7 @@ namespace DatabaseMigrations.Services
                     ShipperId = order.ShipperId,
                 });
 
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogError($"Cannot update Order {id}");
                 }

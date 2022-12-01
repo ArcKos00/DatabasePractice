@@ -8,15 +8,15 @@ namespace CodeFirst.Entities
 {
     public class CustomerEntity
     {
-        public int CustomerId { get; set; }
+        public int Id { get; set; }
         public List<OrderEntity> OrderList { get; set; } = new List<OrderEntity>();
 
-        public string? FirstName { get; set; } = string.Empty;
-        public string? LastName { get; set; } = string.Empty;
-        public string? Address1 { get; set; } = string.Empty;
-        public string? Phone { get; set; } = string.Empty;
-        public string? Email { get; set; } = string.Empty;
-        public string? Password { get; set; } = string.Empty;
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Address1 { get; set; }
+        public string? Phone { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
         public DateOnly DateEntered { get; set; }
     }
 }

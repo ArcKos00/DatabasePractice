@@ -20,6 +20,13 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
+        public async Task<int> AddProductAsync(ProductEntity product)
+        {
+            var entity = await _dbContext.Products.AddAsync(product);
+            await _dbContext.SaveChangesAsync();
+            return entity.Entity.Id;
+        }
+
         public async Task<int> AddProductAsync(string name, string discription, float unitPrice, float discount, CategoryEntity category, SupplierEntity supplier, List<OrderDetailEntity> inOrders)
         {
             var entity = await _dbContext.Products.AddAsync(new ProductEntity()
@@ -27,9 +34,9 @@ namespace DatabaseMigrations.Repositories
                 ProductName = name,
                 ProductDiscription = discription,
                 Supplier = supplier,
-                SupplierId = supplier.SupplierId,
+                SupplierId = supplier.Id,
                 Category = category,
-                CategoryId = category.CategoryId,
+                CategoryId = category.Id,
                 UnitPrice = unitPrice,
                 Discount = discount,
             });
@@ -37,41 +44,33 @@ namespace DatabaseMigrations.Repositories
             await _dbContext.OrderDetails.AddRangeAsync(inOrders.Select(s => new OrderDetailEntity()
             {
                 OrderId = s.OrderId,
-                ProductId = entity.Entity.ProductId,
+                ProductId = entity.Entity.Id,
                 Price = entity.Entity.UnitPrice,
                 Discount = entity.Entity.Discount,
                 Total = s.Total,
-                OrderDetailId = s.OrderDetailId,
+                Id = s.Id,
                 OrderNumber = s.OrderNumber,
                 Order = s.Order,
                 Product = s.Product
             }));
 
             await _dbContext.SaveChangesAsync();
-            return entity.Entity.ProductId;
+            return entity.Entity.Id;
         }
 
-        public async Task<ProductEntity?> GetProductByIdAsync(int id)
+        public async Task<ProductEntity?> GetProductAsync(int productId)
         {
-            return await _dbContext.Products.FirstOrDefaultAsync(f => f.ProductId == id);
+            return await _dbContext.Products.FirstOrDefaultAsync(f => f.Id == productId);
         }
 
-        public async Task<bool> DeleteProductAsync(int entityId)
+        public async Task<List<CategoryEntity>?> GetCategoryListAsync(ProductEntity newEntity)
         {
-            var entity = await GetProductByIdAsync(entityId);
-            if (entity == null)
-            {
-                return false;
-            }
-
-            _dbContext.Entry(entity).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return true;
+            return await _dbContext.Categories.Where(s => s.ProductsList.Contains(newEntity)).ToListAsync();
         }
 
-        public async Task<bool> UpdateProductAsync(int entityId, ProductEntity newEntity)
+        public async Task<bool> UpdateProductDataAsync(int entityId, ProductEntity newEntity)
         {
-            var entity = await GetProductByIdAsync(entityId);
+            var entity = await GetProductAsync(entityId);
             if (entity == null)
             {
                 return false;
@@ -82,9 +81,115 @@ namespace DatabaseMigrations.Repositories
             return true;
         }
 
-        public async Task<List<CategoryEntity>?> GetCategoryListAsync(ProductEntity newEntity)
+        public async Task<bool> UpdateProductNameAsync(int entityId, string productName)
         {
-            return await _dbContext.Categoryes.Where(s => s.ProductsList.Contains(newEntity)).ToListAsync();
+            var entity = await GetProductAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.ProductName = productName;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateProductDiscriptionAsync(int entityId, string discription)
+        {
+            var entity = await GetProductAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.ProductDiscription = discription;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateProductSupplierIdAsync(int entityId, int supplierId)
+        {
+            var entity = await GetProductAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.SupplierId = supplierId;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateProductCategoryIdAsync(int entityId, int categoryId)
+        {
+            var entity = await GetProductAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.CategoryId = categoryId;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateProductPriceAsync(int entityId, float price)
+        {
+            var entity = await GetProductAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.UnitPrice = price;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateProductDiscountAsync(int entityId, float discount)
+        {
+            var entity = await GetProductAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Discount = discount;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateProductAvailableAsync(int entityId, bool available)
+        {
+            var entity = await GetProductAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.ProductAvailable = available;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteProductAsync(int entityId)
+        {
+            var entity = await GetProductAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).State = EntityState.Deleted;
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

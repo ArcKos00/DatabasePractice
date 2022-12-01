@@ -19,6 +19,13 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
+        public async Task<int> AddSupplierAsync(SupplierEntity supplier)
+        {
+            var entity = await _dbContext.Suppliers.AddAsync(supplier);
+            await _dbContext.SaveChangesAsync();
+            return entity.Entity.Id;
+        }
+
         public async Task<int> AddSupplierAsync(string companyName, string contactFName, string phone, string email, List<ProductEntity> products)
         {
             var entity = await _dbContext.Suppliers.AddAsync(new SupplierEntity()
@@ -31,10 +38,10 @@ namespace DatabaseMigrations.Repositories
 
             await _dbContext.Products.AddRangeAsync(products.Select(s => new ProductEntity()
             {
-                ProductId = s.ProductId,
+                Id = s.Id,
                 ProductName = s.ProductName,
                 ProductDiscription = s.ProductDiscription,
-                SupplierId = entity.Entity.SupplierId,
+                SupplierId = entity.Entity.Id,
                 CategoryId = s.CategoryId,
                 UnitPrice = s.UnitPrice,
                 ProductAvailable = s.ProductAvailable,
@@ -46,36 +53,98 @@ namespace DatabaseMigrations.Repositories
             }));
 
             await _dbContext.SaveChangesAsync();
-            return entity.Entity.SupplierId;
+            return entity.Entity.Id;
         }
 
-        public async Task<SupplierEntity?> GetSupplierByIdAsync(int entityId)
+        public async Task<SupplierEntity?> GetSupplierAsync(int supplierId)
         {
-            return await _dbContext.Suppliers.FirstOrDefaultAsync(f => f.SupplierId == entityId);
+            return await _dbContext.Suppliers.FirstOrDefaultAsync(f => f.Id == supplierId);
         }
 
-        public async Task<bool> DeleteSupplierAsync(int entityId)
+        public async Task<List<ProductEntity>?> GetSupplierProductList(int supplierId)
         {
-            var entity = await GetSupplierByIdAsync(entityId);
-            if (entity == null)
-            {
-                return false;
-            }
-
-            _dbContext.Entry(entity).State = EntityState.Deleted;
-            await _dbContext.SaveChangesAsync();
-            return true;
+            var entity = await _dbContext.Suppliers.Include(i => i.ProductList).FirstOrDefaultAsync(f => f.Id == supplierId);
+            return entity?.ProductList;
         }
 
-        public async Task<bool> UpdateSupplierAsync(int entityId, SupplierEntity newEntity)
+        public async Task<bool> UpdateSupplierDataAsync(int supplierId, SupplierEntity newEntity)
         {
-            var entity = await GetSupplierByIdAsync(entityId);
+            var entity = await GetSupplierAsync(supplierId);
             if (entity == null)
             {
                 return false;
             }
 
             _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateSupplierCompanyNameAsync(int supplierId, string name)
+        {
+            var entity = await GetSupplierAsync(supplierId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.CompanyName = name;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateSupplierContactNameAsync(int supplierId, string contactName)
+        {
+            var entity = await GetSupplierAsync(supplierId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.ContactFName = contactName;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateSupplierPhoneAsync(int supplierId, string phone)
+        {
+            var entity = await GetSupplierAsync(supplierId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Phone = phone;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateSupplierEmailAsync(int supplierId, string email)
+        {
+            var entity = await GetSupplierAsync(supplierId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Email = email;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteSupplierAsync(int supplierId)
+        {
+            var entity = await GetSupplierAsync(supplierId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return true;
         }

@@ -46,6 +46,5 @@ void ConfigurationService(ServiceCollection collection, IConfiguration config)
         .AddTransient<IProductService, ProductService>()
         .AddTransient<IShipperService, ShippersService>()
         .AddTransient<ISupplierService, SupplierService>()
-        .AddTransient<INotificationsService, NotificationService>()
         .AddTransient<Application>();
 }

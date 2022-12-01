@@ -14,19 +14,16 @@ namespace DatabaseMigrations.Services
     public class CustomerService : BaseDataService<ApplicationDbContext>, ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
-        private readonly INotificationsService _notificationsService;
         private readonly ILogger<Customer> _logger;
 
         public CustomerService(
             ILogger<BaseDataService<ApplicationDbContext>> logService,
             ILogger<Customer> logger,
             ICustomerRepository repository,
-            INotificationsService notification,
             IDbContextWrapper<ApplicationDbContext> wrapper)
             : base(wrapper, logService)
         {
             _customerRepository = repository;
-            _notificationsService = notification;
             _logger = logger;
         }
 
@@ -36,7 +33,7 @@ namespace DatabaseMigrations.Services
             {
                 return await _customerRepository.AddCustomerAsync(address, email, firstName, secondName, phone, password, orders.Select(s => new OrderEntity()
                 {
-                    OrderId = s.Id,
+                    Id = s.Id,
                     CustomerId = s.CustomerId,
                     OrderNumber = s.OrderNumber,
                     OrderDate = s.OrderDate,
@@ -49,7 +46,7 @@ namespace DatabaseMigrations.Services
 
         public async Task<Customer>? GetCustomerAsync(int id)
         {
-            var result = await _customerRepository.GetCustomerByIdAsync(id);
+            var result = await _customerRepository.GetCustomerAsync(id);
             if (result == null)
             {
                 _logger.LogError($"Cannot found customer with id: {id}");
@@ -58,7 +55,7 @@ namespace DatabaseMigrations.Services
 
             return new Customer()
             {
-                Id = result.CustomerId,
+                Id = result.Id,
                 FirstName = result.FirstName,
                 LastName = result.LastName,
                 Address1 = result.Address1,
@@ -67,7 +64,7 @@ namespace DatabaseMigrations.Services
                 DateEntry = result.DateEntered,
                 OrderList = result.OrderList.Select(s => new Order()
                 {
-                    Id = s.OrderId,
+                    Id = s.Id,
                     OrderNumber = s.OrderNumber,
                     OrderDate = s.OrderDate,
                     Paid = s.Paid,
@@ -79,9 +76,9 @@ namespace DatabaseMigrations.Services
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _customerRepository.UpdateCustomerByIdAsync(id, new CustomerEntity()
+                var result = await _customerRepository.UpdateCustomerDataAsync(id, new CustomerEntity()
                 {
-                    CustomerId = customer.Id,
+                    Id = customer.Id,
                     FirstName = customer.FirstName,
                     LastName = customer.LastName,
                     Address1 = customer.Address1,
@@ -90,7 +87,7 @@ namespace DatabaseMigrations.Services
                     Password = customer.Password,
                     DateEntered = customer.DateEntry
                 });
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogError($"Cannot Update this User {id}");
                 }
@@ -101,8 +98,8 @@ namespace DatabaseMigrations.Services
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _customerRepository.DeleteCustomerByIdAsync(id);
-                if (result == false)
+                var result = await _customerRepository.DeleteCustomerAsync(id);
+                if (!result)
                 {
                     _logger.LogError($"Cannot Delete Customer with id: {id}");
                 }

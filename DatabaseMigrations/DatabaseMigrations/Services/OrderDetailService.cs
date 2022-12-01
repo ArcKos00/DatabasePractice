@@ -36,7 +36,7 @@ namespace DatabaseMigrations.Services
                     discount,
                     new OrderEntity()
                     {
-                        OrderId = order.Id,
+                        Id = order.Id,
                         CustomerId = order.CustomerId,
                         OrderNumber = order.OrderNumber,
                         OrderDate = order.OrderDate,
@@ -46,7 +46,7 @@ namespace DatabaseMigrations.Services
                     },
                     new ProductEntity()
                     {
-                        ProductId = product.Id,
+                        Id = product.Id,
                         ProductName = product.ProductName,
                         ProductDiscription = product.ProductDescription,
                         SupplierId = product.Supplierid,
@@ -61,7 +61,7 @@ namespace DatabaseMigrations.Services
 
         public async Task<OrderDetail>? GetOrderDetailsAsync(int id)
         {
-            var result = await _orderDetailRepository.GetOrderDetailByIdAsync(id);
+            var result = await _orderDetailRepository.GetOrderDetailAsync(id);
             if (result == null)
             {
                 _logger.LogError($"Cannot found OrderDetails with id: {id}");
@@ -73,7 +73,7 @@ namespace DatabaseMigrations.Services
                 Total = result.Total,
                 Price = result.Price,
                 OrderId = result.OrderId,
-                Id = result.OrderDetailId,
+                Id = result.Id,
                 Discount = result.Discount,
                 ProductId = result.ProductId,
                 OrderNumber = result.OrderNumber,
@@ -103,7 +103,7 @@ namespace DatabaseMigrations.Services
             await ExecuteSafeAsync(async () =>
             {
                 var result = await _orderDetailRepository.DeleteOrderDetailsAsync(id);
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogError("Cannot delete this Details");
                 }

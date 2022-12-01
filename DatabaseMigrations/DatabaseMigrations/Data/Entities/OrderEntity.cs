@@ -8,7 +8,7 @@ namespace CodeFirst.Entities
 {
     public class OrderEntity
     {
-        public int OrderId { get; set; }
+        public int Id { get; set; }
 
         public int CustomerId { get; set; }
         public CustomerEntity? Customer { get; set; } = null;

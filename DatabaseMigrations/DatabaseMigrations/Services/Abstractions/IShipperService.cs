@@ -10,7 +10,7 @@ namespace DatabaseMigrations.Services.Abstractions
     public interface IShipperService
     {
         public Task<int> AddShipperAsync(string name, string phone, IEnumerable<Order> orders);
-        public Task<Shipper?> GetShipperByIdAsync(int id);
+        public Task<Shipper?> GetShipperAsync(int id);
         public Task UpdateShipperAsync(int id, Shipper ship);
         public Task DeleteShipperAsync(int id);
     }

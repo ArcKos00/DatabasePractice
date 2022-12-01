@@ -16,7 +16,7 @@ namespace DatabaseMigrations
         {
         }
 
-        public DbSet<CategoryEntity> Categoryes { get; set; } = null!;
+        public DbSet<CategoryEntity> Categories { get; set; } = null!;
         public DbSet<CustomerEntity> Customers { get; set; } = null!;
         public DbSet<OrderDetailEntity> OrderDetails { get; set; } = null!;
         public DbSet<OrderEntity> Orders { get; set; } = null!;

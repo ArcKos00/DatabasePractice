@@ -19,9 +19,16 @@ namespace DatabaseMigrations.Repositories
             _dbContext = context.DbContext;
         }
 
+        public async Task<int> AddCategoryAsync(CategoryEntity category)
+        {
+            var entity = await _dbContext.Categories.AddAsync(category);
+            await _dbContext.SaveChangesAsync();
+            return entity.Entity.Id;
+        }
+
         public async Task<int> AddCategoryAsync(string categoryName, string discription, List<ProductEntity> products, bool isActive = false)
         {
-            var category = await _dbContext.Categoryes.AddAsync(new CategoryEntity()
+            var category = await _dbContext.Categories.AddAsync(new CategoryEntity()
             {
                 CategoryName = categoryName,
                 Discription = discription,
@@ -30,11 +37,11 @@ namespace DatabaseMigrations.Repositories
 
             await _dbContext.Products.AddRangeAsync(products.Select(s => new ProductEntity()
             {
-                ProductId = s.ProductId,
+                Id = s.Id,
                 ProductName = s.ProductName,
                 ProductDiscription = s.ProductDiscription,
                 SupplierId = s.SupplierId,
-                CategoryId = category.Entity.CategoryId,
+                CategoryId = category.Entity.Id,
                 UnitPrice = s.UnitPrice,
                 Discount = s.Discount,
                 ProductAvailable = s.ProductAvailable,
@@ -45,12 +52,32 @@ namespace DatabaseMigrations.Repositories
             }));
 
             await _dbContext.SaveChangesAsync();
-            return category.Entity.CategoryId;
+            return category.Entity.Id;
         }
 
-        public async Task<bool> DeleteCategoryByIdAsync(int categoryId)
+        public async Task<CategoryEntity?> GetCategoryAsync(int categoryId)
         {
-            var category = await GetCategoryByIdAsync(categoryId);
+            return await _dbContext.Categories.FirstOrDefaultAsync(f => f.Id == categoryId);
+        }
+
+        public async Task<CategoryEntity?> GetCategoryByNameAsync(string categoryName)
+        {
+            return await _dbContext.Categories.FirstOrDefaultAsync(f => f.CategoryName == categoryName);
+        }
+
+        public async Task<CategoryEntity?> GetCategoryWithChildAsync(int categoryId)
+        {
+            return await _dbContext.Categories.Include(i => i.ProductsList).FirstOrDefaultAsync(f => f.Id == categoryId);
+        }
+
+        public async Task<CategoryEntity?> GetCategoryByNameWithChildAsync(string categoryName)
+        {
+            return await _dbContext.Categories.Include(i => i.ProductsList).FirstOrDefaultAsync(f => f.CategoryName == categoryName);
+        }
+
+        public async Task<bool> DeleteCategoryAsync(int categoryId)
+        {
+            var category = await GetCategoryAsync(categoryId);
             if (category == null)
             {
                 return false;
@@ -61,25 +88,57 @@ namespace DatabaseMigrations.Repositories
             return true;
         }
 
-        public async Task<CategoryEntity?> GetCategoryByIdAsync(int categoryId)
+        public async Task<bool> UpdateCategoryNameAsync(int entityId, string name)
         {
-            return await _dbContext.Categoryes.Include(i => i.ProductsList).FirstOrDefaultAsync(f => f.CategoryId == categoryId);
+            var entity = await GetCategoryAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.CategoryName = name;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<CategoryEntity?> GetCategoryByNameAsync(string categoryName)
+        public async Task<bool> UpdateCategoryDataAsync(int entityId, CategoryEntity newEntity)
         {
-            return await _dbContext.Categoryes.Include(i => i.ProductsList).FirstOrDefaultAsync(f => f.CategoryName == categoryName);
-        }
-
-        public async Task<bool> UpdateCategoryByIdAsync(int entityId, CategoryEntity newEntity)
-        {
-            var entity = await GetCategoryByIdAsync(entityId);
+            var entity = await GetCategoryAsync(entityId);
             if (entity == null)
             {
                 return false;
             }
 
             _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateCategoryActiveAsync(int entityId, bool active)
+        {
+            var entity = await GetCategoryAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Active = true;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateCategoryDiscriptionAsync(int entityId, string discription)
+        {
+            var entity = await GetCategoryAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Discription = discription;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
             await _dbContext.SaveChangesAsync();
             return true;
         }

@@ -8,9 +8,9 @@ namespace CodeFirst.Entities
 {
     public class CategoryEntity
     {
-        public int CategoryId { get; set; }
-        public string? CategoryName { get; set; } = string.Empty;
-        public string? Discription { get; set; } = string.Empty;
+        public int Id { get; set; }
+        public string? CategoryName { get; set; }
+        public string? Discription { get; set; }
         public bool Active { get; set; }
 
         public List<ProductEntity> ProductsList { get; set; } = new List<ProductEntity>();

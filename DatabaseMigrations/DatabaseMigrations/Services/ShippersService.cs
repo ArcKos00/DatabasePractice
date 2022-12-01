@@ -34,7 +34,7 @@ namespace DatabaseMigrations.Services
             {
                 return await _shipperRepository.AddShipperAsync(name, phone, orders.Select(s => new OrderEntity()
                 {
-                    OrderId = s.Id,
+                    Id = s.Id,
                     CustomerId = s.CustomerId,
                     OrderNumber = s.OrderNumber,
                     OrderDate = s.OrderDate,
@@ -45,9 +45,9 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task<Shipper?> GetShipperByIdAsync(int id)
+        public async Task<Shipper?> GetShipperAsync(int id)
         {
-            var result = await _shipperRepository.GetShipperByIdAsync(id);
+            var result = await _shipperRepository.GetShipperAsync(id);
             if (result == null)
             {
                 _logger.LogError($"Cannot found shipper");
@@ -56,7 +56,7 @@ namespace DatabaseMigrations.Services
 
             return new Shipper()
             {
-                Id = result.ShipperId,
+                Id = result.Id,
                 CompanyName = result.CompanyName,
                 Phone = result.Phone
             };
@@ -66,13 +66,13 @@ namespace DatabaseMigrations.Services
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _shipperRepository.UpdateShipperAsync(id, new ShipperEntity()
+                var result = await _shipperRepository.UpdateShipperDataAsync(id, new ShipperEntity()
                 {
-                    ShipperId = newEntity.Id,
+                    Id = newEntity.Id,
                     CompanyName = newEntity.CompanyName,
                     Phone = newEntity.Phone,
                 });
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogError($"Cannot update ShipperData");
                 }
@@ -82,7 +82,7 @@ namespace DatabaseMigrations.Services
         public async Task DeleteShipperAsync(int id)
         {
             var result = await _shipperRepository.DeleteShipperAsync(id);
-            if (result == false)
+            if (!result)
             {
                 _logger.LogError($"Cannot delete ShipperData");
             }

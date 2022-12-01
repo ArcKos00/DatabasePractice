@@ -36,7 +36,7 @@ namespace DatabaseMigrations.Services
                     discription,
                     products.Select(s => new ProductEntity()
                     {
-                        ProductId = s.Id,
+                        Id = s.Id,
                         ProductName = s.ProductName,
                         ProductDiscription = s.ProductDescription,
                         SupplierId = s.Supplierid,
@@ -53,7 +53,7 @@ namespace DatabaseMigrations.Services
 
         public async Task<Category> GetCategoryAsync(int categoryId)
         {
-            var result = await _categoryRepository.GetCategoryByIdAsync(categoryId);
+            var result = await _categoryRepository.GetCategoryAsync(categoryId);
             if (result == null)
             {
                 _logger.LogWarning($"Not found Category with id: {categoryId}");
@@ -62,7 +62,7 @@ namespace DatabaseMigrations.Services
 
             return new Category()
             {
-                Id = result.CategoryId,
+                Id = result.Id,
                 CategoryName = result.CategoryName,
                 Active = result.Active,
                 Discription = result.Discription,
@@ -80,14 +80,14 @@ namespace DatabaseMigrations.Services
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _categoryRepository.UpdateCategoryByIdAsync(categoryId, new CategoryEntity()
+                var result = await _categoryRepository.UpdateCategoryDataAsync(categoryId, new CategoryEntity()
                 {
-                    CategoryId = categoryId,
+                    Id = categoryId,
                     CategoryName = category.CategoryName,
                     Active = category.Active,
                     Discription = category.Discription
                 });
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogWarning("Cannot Update this Category");
                 }
@@ -98,8 +98,8 @@ namespace DatabaseMigrations.Services
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _categoryRepository.DeleteCategoryByIdAsync(id);
-                if (result == false)
+                var result = await _categoryRepository.DeleteCategoryAsync(id);
+                if (!result)
                 {
                     _logger.LogError($"Failed to delete Category with id: {id}");
                 }

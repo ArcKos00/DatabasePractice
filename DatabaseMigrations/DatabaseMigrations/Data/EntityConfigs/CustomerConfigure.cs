@@ -13,17 +13,16 @@ namespace CodeFirst.EntityConfigs
     {
         public void Configure(EntityTypeBuilder<CustomerEntity> builder)
         {
-            builder.ToTable("Customers");
-            builder.HasKey(k => k.CustomerId);
+            builder.HasKey(k => k.Id);
 
-            builder.Property(p => p.CustomerId).HasColumnName("CustomerId").IsRequired(true).HasColumnType("int").ValueGeneratedOnAdd();
-            builder.Property(p => p.FirstName).HasColumnName("FirstName").IsRequired(false).HasColumnType("text").HasMaxLength(100);
-            builder.Property(p => p.LastName).HasColumnName("LastName").IsRequired(false).HasColumnType("text").HasMaxLength(100);
-            builder.Property(p => p.Address1).HasColumnName("Address1").IsRequired(false).HasColumnType("text").HasMaxLength(255);
-            builder.Property(p => p.Phone).HasColumnName("Phone").IsRequired(false).HasColumnType("text").HasMaxLength(20);
-            builder.Property(p => p.Email).HasColumnName("Email").IsRequired(false).HasColumnType("text").HasMaxLength(255);
-            builder.Property(p => p.Password).HasColumnName("Password").IsRequired(true).HasColumnType("text").HasMaxLength(255);
-            builder.Property(p => p.DateEntered).HasColumnName("DateEntered").IsRequired(true).HasColumnType("date");
+            builder.Property(p => p.Id);
+            builder.Property(p => p.FirstName).HasMaxLength(100);
+            builder.Property(p => p.LastName).HasMaxLength(100);
+            builder.Property(p => p.Address1).HasMaxLength(255);
+            builder.Property(p => p.Phone).HasMaxLength(20);
+            builder.Property(p => p.Email).HasMaxLength(255);
+            builder.Property(p => p.Password).HasMaxLength(255);
+            builder.Property(p => p.DateEntered);
 
             builder.HasMany(m => m.OrderList).WithOne(o => o.Customer).HasForeignKey(k => k.CustomerId);
         }

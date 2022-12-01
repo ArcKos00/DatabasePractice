@@ -19,26 +19,125 @@ namespace DatabaseMigrations.Repositories
             _dbContext = wrapper.DbContext;
         }
 
+        public async Task<int> AddOrderDetailsAsync(OrderDetailEntity details)
+        {
+            var entity = await _dbContext.OrderDetails.AddAsync(details);
+            await _dbContext.SaveChangesAsync();
+            return entity.Entity.Id;
+        }
+
         public async Task<int> AddOrderDetailsAsync(float price, float discount, OrderEntity order, ProductEntity product)
         {
             var orderDetail = await _dbContext.OrderDetails.AddAsync(new OrderDetailEntity()
             {
                 Price = price,
                 Discount = discount,
-                Total = price * (discount / 100),
                 OrderNumber = order.OrderNumber,
-                ProductId = product.ProductId,
-                OrderId = order.OrderId,
+                ProductId = product.Id,
+                OrderId = order.Id,
                 Order = order,
                 Product = product
             });
             await _dbContext.SaveChangesAsync();
-            return orderDetail.Entity.OrderDetailId;
+            return orderDetail.Entity.Id;
+        }
+
+        public async Task<OrderDetailEntity?> GetOrderDetailAsync(int detailsId)
+        {
+            return await _dbContext.OrderDetails.Include(i => i.Order).FirstOrDefaultAsync();
+        }
+
+        public async Task<OrderDetailEntity?> GetOrderDetailWithProductAsync(int detailsId)
+        {
+            return await _dbContext.OrderDetails.Include(i => i.Order).Include(i => i.Product).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateTotalAsync(int entityId, float total)
+        {
+            var entity = await GetOrderDetailAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Total = total;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdatePriceAsync(int entityId, float price)
+        {
+            var entity = await GetOrderDetailAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Price = price;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateDiscountAsync(int entityId, float discount)
+        {
+            var entity = await GetOrderDetailAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.Discount = discount;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateDetailDataAsync(int entityId, CustomerEntity newEntity)
+        {
+            var entity = await GetOrderDetailAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            _dbContext.Entry(entity).CurrentValues.SetValues(newEntity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateDetailOrderIdAsync(int entityId, int orderId)
+        {
+            var entity = await GetOrderDetailAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.OrderId = orderId;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateDetailProductIdAsync(int entityId, int productId)
+        {
+            var entity = await GetOrderDetailAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.ProductId = productId;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> DeleteOrderDetailsAsync(int detailId)
         {
-            var details = await GetOrderDetailByIdAsync(detailId);
+            var details = await GetOrderDetailAsync(detailId);
             if (details == null)
             {
                 return false;
@@ -47,11 +146,6 @@ namespace DatabaseMigrations.Repositories
             _dbContext.Entry(details).State = EntityState.Deleted;
             await _dbContext.SaveChangesAsync();
             return true;
-        }
-
-        public async Task<OrderDetailEntity?> GetOrderDetailByIdAsync(int detailsId)
-        {
-            return await _dbContext.OrderDetails.Include(i => i.Order).Include(i => i.Product).FirstOrDefaultAsync();
         }
     }
 }

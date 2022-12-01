@@ -8,10 +8,10 @@ namespace CodeFirst.Entities
 {
     public class PaymentEntity
     {
-        public int PaymentId { get; set; }
+        public int Id { get; set; }
         public List<OrderEntity> OrderList { get; set; } = new List<OrderEntity>();
 
-        public string? PaymentType { get; set; } = string.Empty;
+        public string? PaymentType { get; set; }
         public bool Allowed { get; set; }
     }
 }

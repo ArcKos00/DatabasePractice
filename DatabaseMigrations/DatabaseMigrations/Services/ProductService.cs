@@ -38,14 +38,14 @@ namespace DatabaseMigrations.Services
                     discount,
                     new CategoryEntity()
                     {
-                        CategoryId = category.Id,
+                        Id = category.Id,
                         CategoryName = category.CategoryName,
                         Discription = category.Discription,
                         Active = category.Active
                     },
                     new SupplierEntity()
                     {
-                        SupplierId = supplier.Id,
+                        Id = supplier.Id,
                         CompanyName = supplier.CompanyName,
                         ContactFName = supplier.ContactFName,
                         Phone = supplier.Phone,
@@ -53,7 +53,7 @@ namespace DatabaseMigrations.Services
                     },
                     inOrders.Select(s => new OrderDetailEntity()
                     {
-                        OrderDetailId = s.Id,
+                        Id = s.Id,
                         OrderId = s.Order!.Id,
                         ProductId = s.ProductInOrder!.Id,
                         OrderNumber = s.OrderNumber,
@@ -66,7 +66,7 @@ namespace DatabaseMigrations.Services
 
         public async Task<Product?> GetProductAsync(int id)
         {
-            var result = await _productRepository.GetProductByIdAsync(id);
+            var result = await _productRepository.GetProductAsync(id);
             if (result == null)
             {
                 _logger.LogError($"Cannot found this Product");
@@ -75,7 +75,7 @@ namespace DatabaseMigrations.Services
 
             return new Product()
             {
-                Id = result.ProductId,
+                Id = result.Id,
                 ProductName = result.ProductName,
                 CategoryId = result.CategoryId,
                 Price = result.UnitPrice,
@@ -93,9 +93,9 @@ namespace DatabaseMigrations.Services
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _productRepository.UpdateProductAsync(id, new ProductEntity()
+                var result = await _productRepository.UpdateProductDataAsync(id, new ProductEntity()
                 {
-                    ProductId = newEntity.Id,
+                    Id = newEntity.Id,
                     ProductName = newEntity.ProductName,
                     ProductDiscription = newEntity.ProductDescription,
                     SupplierId = newEntity.Supplier!.Id,
@@ -105,7 +105,7 @@ namespace DatabaseMigrations.Services
                     ProductAvailable = newEntity.Available,
                     CurrentOrder = newEntity.CurrentOrder,
                 });
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogError($"Cannot Update this product id:{id}");
                 }
@@ -117,7 +117,7 @@ namespace DatabaseMigrations.Services
             await ExecuteSafeAsync(async () =>
             {
                 var result = await _productRepository.DeleteProductAsync(id);
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogError($"Cannot Update this product id:{id}");
                 }
@@ -128,14 +128,14 @@ namespace DatabaseMigrations.Services
         {
             var result = await _productRepository.GetCategoryListAsync(new ProductEntity()
             {
-                ProductId = product.Id,
+                Id = product.Id,
                 ProductName = product.ProductName,
                 CategoryId = product.CategoryId,
             });
             _logger.LogWarning("Nobody category is not exist this product");
             return result?.Select(s => new Category()
             {
-                Id = s.CategoryId,
+                Id = s.Id,
                 CategoryName = s.CategoryName,
                 Discription = s.Discription,
                 Active = s.Active,

@@ -9,7 +9,7 @@ namespace DatabaseMigrations.Models
     public class Payment
     {
         public int Id { get; set; }
-        public string? PaymentType { get; set; } = string.Empty;
+        public string? PaymentType { get; set; }
         public IEnumerable<Order> Orders { get; set; } = new List<Order>();
         public bool Allowed { get; set; }
     }

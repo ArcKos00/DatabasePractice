@@ -34,7 +34,7 @@ namespace DatabaseMigrations.Services
             {
                 return await _supplierRepository.AddSupplierAsync(companyName, contactFName, phone, email, products.Select(s => new ProductEntity()
                 {
-                    ProductId = s.Id,
+                    Id = s.Id,
                     ProductName = s.ProductName,
                     ProductDiscription = s.ProductDescription,
                     SupplierId = s.Supplierid,
@@ -49,7 +49,7 @@ namespace DatabaseMigrations.Services
 
         public async Task<Supplier?> GetSupplierAsync(int id)
         {
-            var result = await _supplierRepository.GetSupplierByIdAsync(id);
+            var result = await _supplierRepository.GetSupplierAsync(id);
             if (result == null)
             {
                 _logger.LogError($"Cannot found Supplier id: {id}");
@@ -58,7 +58,7 @@ namespace DatabaseMigrations.Services
 
             return new Supplier()
             {
-                Id = result.SupplierId,
+                Id = result.Id,
                 CompanyName = result.CompanyName,
                 ContactFName = result.ContactFName,
                 Email = result.Email,
@@ -70,15 +70,15 @@ namespace DatabaseMigrations.Services
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _supplierRepository.UpdateSupplierAsync(id, new SupplierEntity()
+                var result = await _supplierRepository.UpdateSupplierDataAsync(id, new SupplierEntity()
                 {
-                    SupplierId = newEntity.Id,
+                    Id = newEntity.Id,
                     CompanyName = newEntity.CompanyName,
                     ContactFName = newEntity.ContactFName,
                     Phone = newEntity.Phone,
                     Email = newEntity.Email
                 });
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogError($"Cannot update this supplier");
                 }
@@ -90,7 +90,7 @@ namespace DatabaseMigrations.Services
             await ExecuteSafeAsync(async () =>
             {
                 var result = await _supplierRepository.DeleteSupplierAsync(id);
-                if (result == false)
+                if (!result)
                 {
                     _logger.LogError($"Cannot update this supplier");
                 }
