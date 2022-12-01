@@ -94,7 +94,7 @@ namespace DatabaseMigrations.Repositories
             return true;
         }
 
-        public async Task<bool> UpdateDetailDataAsync(int entityId, CustomerEntity newEntity)
+        public async Task<bool> UpdateDetailDataAsync(int entityId, OrderDetailEntity newEntity)
         {
             var entity = await GetOrderDetailAsync(entityId);
             if (entity == null)

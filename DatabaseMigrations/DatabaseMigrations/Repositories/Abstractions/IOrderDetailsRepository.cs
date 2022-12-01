@@ -14,7 +14,7 @@ namespace DatabaseMigrations.Repositories.Abstractions
         public Task<int> AddOrderDetailsAsync(float price, float discount, OrderEntity order, ProductEntity product);
         public Task<OrderDetailEntity?> GetOrderDetailAsync(int detailsId);
         public Task<OrderDetailEntity?> GetOrderDetailWithProductAsync(int detailsId);
-        public Task<bool> UpdateDetailDataAsync(int entityId, CustomerEntity newEntity);
+        public Task<bool> UpdateDetailDataAsync(int entityId, OrderDetailEntity newEntity);
         public Task<bool> UpdateDetailOrderIdAsync(int entityId, int orderId);
         public Task<bool> UpdateDetailProductIdAsync(int entityId, int productId);
         public Task<bool> UpdatePriceAsync(int entityId, float price);

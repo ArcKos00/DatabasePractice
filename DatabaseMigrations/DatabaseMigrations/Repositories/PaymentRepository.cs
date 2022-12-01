@@ -79,7 +79,7 @@ namespace DatabaseMigrations.Repositories
             return true;
         }
 
-        public async Task<bool> UpdatePaymentAllowerAsync(int entityId, bool allow)
+        public async Task<bool> UpdatePaymentAllowAsync(int entityId, bool allow)
         {
             var entity = await GetPaymentAsync(entityId);
             if (entity == null)

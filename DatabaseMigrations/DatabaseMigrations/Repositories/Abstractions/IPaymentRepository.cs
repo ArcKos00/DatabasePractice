@@ -15,7 +15,7 @@ namespace DatabaseMigrations.Repositories.Abstractions
         public Task<PaymentEntity?> GetPaymentAsync(int entityId);
         public Task<bool> UpdatePaymentDataAsync(int entityId, PaymentEntity newEntity);
         public Task<bool> UpdatePaymentPaymentTypeAsync(int entityId, string paymentType);
-        public Task<bool> UpdatePaymentAllowerAsync(int entityId, bool allow);
+        public Task<bool> UpdatePaymentAllowAsync(int entityId, bool allow);
         public Task<bool> DeletePaymentAsync(int entityId);
     }
 }

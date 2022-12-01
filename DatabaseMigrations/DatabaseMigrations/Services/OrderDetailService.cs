@@ -27,6 +27,23 @@ namespace DatabaseMigrations.Services
             _logger = logger;
         }
 
+        public async Task<int> AddOrderDetailsAsync(OrderDetail detail)
+        {
+            return await ExecuteSafeAsync<int>(async () =>
+            {
+                return await _orderDetailRepository.AddOrderDetailsAsync(new OrderDetailEntity()
+                {
+                    Id = detail.Id,
+                    Discount = detail.Discount,
+                    OrderId = detail.OrderId,
+                    OrderNumber = detail.OrderNumber,
+                    Price = detail.Price,
+                    ProductId = detail.ProductId,
+                    Total = detail.Total
+                });
+            });
+        }
+
         public async Task<int> AddOrderDetailsAsync(float price, float discount, Order order, Product product)
         {
             return await ExecuteSafeAsync<int>(async () =>
@@ -59,12 +76,35 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task<OrderDetail>? GetOrderDetailsAsync(int id)
+        public async Task<OrderDetail>? GetOrderDetailsAsync(int detailId)
         {
-            var result = await _orderDetailRepository.GetOrderDetailAsync(id);
+            var result = await _orderDetailRepository.GetOrderDetailAsync(detailId);
             if (result == null)
             {
-                _logger.LogError($"Cannot found OrderDetails with id: {id}");
+                _logger.LogError($"Cannot found OrderDetails with id: {detailId}");
+                return null!;
+            }
+
+            return new OrderDetail()
+            {
+                Total = result.Total,
+                Price = result.Price,
+                OrderId = result.OrderId,
+                Id = result.Id,
+                Discount = result.Discount,
+                ProductId = result.ProductId,
+                OrderNumber = result.OrderNumber,
+                ProductInOrder = new Product(),
+                Order = new Order()
+            };
+        }
+
+        public async Task<OrderDetail>? GetOrderDetailsWithChildAsync(int detailId)
+        {
+            var result = await _orderDetailRepository.GetOrderDetailAsync(detailId);
+            if (result == null)
+            {
+                _logger.LogError($"Cannot found OrderDetails with id: {detailId}");
                 return null!;
             }
 
@@ -96,6 +136,69 @@ namespace DatabaseMigrations.Services
                     ShipperId = result.Order.ShipperId,
                 }
             };
+        }
+
+        public async Task UpdateDataAsync(int detailId, OrderDetail detail)
+        {
+            var result = await _orderDetailRepository.UpdateDetailDataAsync(detailId, new OrderDetailEntity()
+            {
+                Id = detail.Id,
+                Discount = detail.Discount,
+                OrderId = detail.OrderId,
+                OrderNumber = detail.OrderNumber,
+                Price = detail.Price,
+                ProductId = detail.ProductId,
+                Total = detail.Total
+            });
+            if (!result)
+            {
+                _logger.LogError("Cannot update Detail");
+            }
+        }
+
+        public async Task UpdateOrderIdAsync(int detailId, int orderId)
+        {
+            var result = await _orderDetailRepository.UpdateDetailOrderIdAsync(detailId, orderId);
+            if (!result)
+            {
+                _logger.LogError("Cannot update Detail");
+            }
+        }
+
+        public async Task UpdateProductIdAsync(int detailId, int productId)
+        {
+            var result = await _orderDetailRepository.UpdateDetailProductIdAsync(detailId, productId);
+            if (!result)
+            {
+                _logger.LogError("Cannot update Detail");
+            }
+        }
+
+        public async Task UpdatePriceAsync(int detailId, float price)
+        {
+            var result = await _orderDetailRepository.UpdatePriceAsync(detailId, price);
+            if (!result)
+            {
+                _logger.LogError("Cannot update Detail");
+            }
+        }
+
+        public async Task UpdateDiscountAsync(int detailId, float discount)
+        {
+            var result = await _orderDetailRepository.UpdateDiscountAsync(detailId, discount);
+            if (!result)
+            {
+                _logger.LogError("Cannot update Detail");
+            }
+        }
+
+        public async Task UpdateTotalAsync(int detailId, float total)
+        {
+            var result = await _orderDetailRepository.UpdateTotalAsync(detailId, total);
+            if (!result)
+            {
+                _logger.LogError("Cannot update Detail");
+            }
         }
 
         public async Task DeleteDetailsAsync(int id)

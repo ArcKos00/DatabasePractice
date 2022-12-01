@@ -26,6 +26,19 @@ namespace DatabaseMigrations.Services
             _logger = logger;
         }
 
+        public async Task<int> AddPaymentAsync(Payment payment)
+        {
+            return await ExecuteSafeAsync<int>(async () =>
+            {
+                return await _paymentRepository.AddPaymentAsync(new PaymentEntity()
+                {
+                    Id = payment.Id,
+                    Allowed = payment.Allowed,
+                    PaymentType = payment.PaymentType
+                });
+            });
+        }
+
         public async Task<int> AddPaymentAsync(string payType, IEnumerable<Order> orders)
         {
             return await ExecuteSafeAsync<int>(async () =>
@@ -43,12 +56,12 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task<Payment>? GetPaymentAsync(int id)
+        public async Task<Payment>? GetPaymentAsync(int paymentId)
         {
-            var result = await _paymentRepository.GetPaymentAsync(id);
+            var result = await _paymentRepository.GetPaymentAsync(paymentId);
             if (result == null)
             {
-                _logger.LogError($"Cannot found payment no{id}");
+                _logger.LogError($"Cannot found payment no{paymentId}");
                 return null!;
             }
 
@@ -60,25 +73,25 @@ namespace DatabaseMigrations.Services
             };
         }
 
-        public async Task UpdatePaymentASync(int id, Payment payment)
+        public async Task UpdatePaymentDataAsync(int paymentId, Payment payment)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _paymentRepository.UpdatePaymentDataAsync(id, new PaymentEntity()
+                var result = await _paymentRepository.UpdatePaymentDataAsync(paymentId, new PaymentEntity()
                 {
                     Id = payment.Id,
+                    PaymentType = payment.PaymentType,
+                    Allowed = payment!.Allowed,
                     OrderList = payment.Orders!.Select(s => new OrderEntity()
                     {
                         Id = s.Id,
                         CustomerId = s.CustomerOrder!.Id,
                         OrderNumber = s.OrderNumber,
                         OrderDate = s.OrderDate,
-                        PaymentId = s.Payment!.Id,
+                        PaymentId = s.PaymentId,
                         Paid = s.Paid,
-                        ShipperId = s.Shipper!.Id,
-                    }).ToList(),
-                    PaymentType = payment.PaymentType,
-                    Allowed = payment!.Allowed
+                        ShipperId = s.ShipperId,
+                    }).ToList()
                 });
                 if (!result)
                 {
@@ -87,11 +100,35 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task DeletePaymentAsync(int id)
+        public async Task UpdatePaymentTypeAsync(int paymentId, string paymentType)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _paymentRepository.DeletePaymentAsync(id);
+                var result = await _paymentRepository.UpdatePaymentPaymentTypeAsync(paymentId, paymentType);
+                if (!result)
+                {
+                    _logger.LogWarning("Cannot update");
+                }
+            });
+        }
+
+        public async Task UpdateAllowAsync(int paymentId, bool paymentAllow)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _paymentRepository.UpdatePaymentAllowAsync(paymentId, paymentAllow);
+                if (!result)
+                {
+                    _logger.LogWarning("Cannot update");
+                }
+            });
+        }
+
+        public async Task DeletePaymentAsync(int paymentId)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _paymentRepository.DeletePaymentAsync(paymentId);
                 if (!result)
                 {
                     _logger.LogError($"Cannot delete this payment");

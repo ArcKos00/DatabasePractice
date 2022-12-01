@@ -68,7 +68,7 @@ namespace DatabaseMigrations.Repositories
             return await _dbContext.Customers.Include(i => i.OrderList).FirstOrDefaultAsync(f => f.Id == customerId);
         }
 
-        public async Task<List<OrderEntity>?> GetCustomerOrders(int customerId)
+        public async Task<List<OrderEntity>?> GetCustomerOrdersAsync(int customerId)
         {
             var customer = await _dbContext.Customers.Include(i => i.OrderList).FirstOrDefaultAsync(f => f.Id == customerId);
 
