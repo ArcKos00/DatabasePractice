@@ -14,10 +14,10 @@ namespace DatabaseMigrations.Services
     public class PaymentService : BaseDataService<ApplicationDbContext>, IPaymentService
     {
         private readonly IPaymentRepository _paymentRepository;
-        private readonly ILogger<Payment> _logger;
+        private readonly ILogger<PaymentService> _logger;
         public PaymentService(
             IPaymentRepository paymentRepository,
-            ILogger<Payment> logger,
+            ILogger<PaymentService> logger,
             ILogger<BaseDataService<ApplicationDbContext>> loggerService,
             IDbContextWrapper<ApplicationDbContext> wrapper)
         : base(wrapper, loggerService)
@@ -56,7 +56,7 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task<Payment>? GetPaymentAsync(int paymentId)
+        public async Task<Payment?> GetPaymentAsync(int paymentId)
         {
             var result = await _paymentRepository.GetPaymentAsync(paymentId);
             if (result == null)
@@ -100,11 +100,11 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task UpdatePaymentTypeAsync(int paymentId, string paymentType)
+        public async Task UpdatePaymentTypeAsync(int paymentId, string type)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _paymentRepository.UpdatePaymentPaymentTypeAsync(paymentId, paymentType);
+                var result = await _paymentRepository.UpdatePaymentPaymentTypeAsync(paymentId, type);
                 if (!result)
                 {
                     _logger.LogWarning("Cannot update");
@@ -112,11 +112,11 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task UpdateAllowAsync(int paymentId, bool paymentAllow)
+        public async Task UpdateAllowAsync(int paymentId, bool allow)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _paymentRepository.UpdatePaymentAllowAsync(paymentId, paymentAllow);
+                var result = await _paymentRepository.UpdatePaymentAllowAsync(paymentId, allow);
                 if (!result)
                 {
                     _logger.LogWarning("Cannot update");

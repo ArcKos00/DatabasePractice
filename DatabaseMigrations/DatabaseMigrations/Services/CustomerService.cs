@@ -14,11 +14,11 @@ namespace DatabaseMigrations.Services
     public class CustomerService : BaseDataService<ApplicationDbContext>, ICustomerService
     {
         private readonly ICustomerRepository _customerRepository;
-        private readonly ILogger<Customer> _logger;
+        private readonly ILogger<CustomerService> _logger;
 
         public CustomerService(
             ILogger<BaseDataService<ApplicationDbContext>> logService,
-            ILogger<Customer> logger,
+            ILogger<CustomerService> logger,
             ICustomerRepository repository,
             IDbContextWrapper<ApplicationDbContext> wrapper)
             : base(wrapper, logService)
@@ -154,11 +154,11 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task UpdateCustomerFNameAsync(int customerId, string newName)
+        public async Task UpdateCustomerFNameAsync(int customerId, string name)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _customerRepository.UpdateCustomerFNameAsync(customerId, newName);
+                var result = await _customerRepository.UpdateCustomerFNameAsync(customerId, name);
                 if (!result)
                 {
                     _logger.LogError($"Cannot Update this User {customerId}");
@@ -166,11 +166,11 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task UpdateCustomerLNameAsync(int customerId, string newLastName)
+        public async Task UpdateCustomerLNameAsync(int customerId, string lastName)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _customerRepository.UpdateCustomerLNameAsync(customerId, newLastName);
+                var result = await _customerRepository.UpdateCustomerLNameAsync(customerId, lastName);
                 if (!result)
                 {
                     _logger.LogError($"Cannot Update this User {customerId}");
@@ -178,11 +178,11 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task UpdateCustomerAddressAsync(int customerId, string newAddres)
+        public async Task UpdateCustomerAddressAsync(int customerId, string addres)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _customerRepository.UpdateCustomerAddressAsync(customerId, newAddres);
+                var result = await _customerRepository.UpdateCustomerAddressAsync(customerId, addres);
                 if (!result)
                 {
                     _logger.LogError($"Cannot Update this User {customerId}");
@@ -190,11 +190,11 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task UpdateCustomerPhoneAsync(int customerId, string newPhone)
+        public async Task UpdateCustomerPhoneAsync(int customerId, string phone)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _customerRepository.UpdateCustomerPhoneAsync(customerId, newPhone);
+                var result = await _customerRepository.UpdateCustomerPhoneAsync(customerId, phone);
                 if (!result)
                 {
                     _logger.LogError($"Cannot Update this User {customerId}");
@@ -202,11 +202,11 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task UpdateCustomerEmailAsync(int customerId, string newEmail)
+        public async Task UpdateCustomerEmailAsync(int customerId, string email)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _customerRepository.UpdateCustomerEmailAsync(customerId, newEmail);
+                var result = await _customerRepository.UpdateCustomerEmailAsync(customerId, email);
                 if (!result)
                 {
                     _logger.LogError($"Cannot Update this User {customerId}");
@@ -214,11 +214,11 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task UpdateCustomerPasswordAsync(int customerId, string newPassword)
+        public async Task UpdateCustomerPasswordAsync(int customerId, string password)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _customerRepository.UpdateCustomerPasswordAsync(customerId, newPassword);
+                var result = await _customerRepository.UpdateCustomerPasswordAsync(customerId, password);
                 if (!result)
                 {
                     _logger.LogError($"Cannot Update this User {customerId}");

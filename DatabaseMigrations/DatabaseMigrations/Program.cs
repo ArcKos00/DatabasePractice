@@ -18,7 +18,7 @@ ConfigurationService(serviceCollection, config);
 var provider = serviceCollection.BuildServiceProvider();
 
 var app = provider.GetService<Application>();
-await app!.Start();
+app!.Start();
 
 void ConfigurationService(ServiceCollection collection, IConfiguration config)
 {

@@ -14,10 +14,10 @@ namespace DatabaseMigrations.Services
     public class OrderService : BaseDataService<ApplicationDbContext>, IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ILogger<Order> _logger;
+        private readonly ILogger<OrderService> _logger;
         public OrderService(
             ILogger<BaseDataService<ApplicationDbContext>> loggerService,
-            ILogger<Order> logger,
+            ILogger<OrderService> logger,
             IDbContextWrapper<ApplicationDbContext> wrapper,
             IOrderRepository repository)
             : base(wrapper, loggerService)
@@ -85,7 +85,7 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task<Order>? GetOrderAsync(int orderId)
+        public async Task<Order?> GetOrderAsync(int orderId)
         {
             var result = await _orderRepository.GetOrderAsync(orderId);
             if (result == null)
@@ -106,7 +106,7 @@ namespace DatabaseMigrations.Services
             };
         }
 
-        public async Task<Order>? GetOrderWithChildsAsync(int orderId)
+        public async Task<Order?> GetOrderWithChildAsync(int orderId)
         {
             var result = await _orderRepository.GetOrderWithDetailsAsync(orderId);
             if (result == null ||

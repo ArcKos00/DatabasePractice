@@ -14,10 +14,10 @@ namespace DatabaseMigrations.Services
     public class OrderDetailService : BaseDataService<ApplicationDbContext>, IOrderDetailService
     {
         private readonly IOrderDetailsRepository _orderDetailRepository;
-        private readonly ILogger<OrderDetail> _logger;
+        private readonly ILogger<OrderDetailService> _logger;
 
         public OrderDetailService(
-            ILogger<OrderDetail> logger,
+            ILogger<OrderDetailService> logger,
             ILogger<BaseDataService<ApplicationDbContext>> loggerService,
             IDbContextWrapper<ApplicationDbContext> wrapper,
             IOrderDetailsRepository repository)
@@ -66,7 +66,7 @@ namespace DatabaseMigrations.Services
                         Id = product.Id,
                         ProductName = product.ProductName,
                         ProductDiscription = product.ProductDescription,
-                        SupplierId = product.Supplierid,
+                        SupplierId = product.SupplierId,
                         CategoryId = product.CategoryId,
                         UnitPrice = product.Price,
                         Discount = product.Discount,
@@ -76,7 +76,7 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task<OrderDetail>? GetOrderDetailsAsync(int detailId)
+        public async Task<OrderDetail?> GetOrderDetailsAsync(int detailId)
         {
             var result = await _orderDetailRepository.GetOrderDetailAsync(detailId);
             if (result == null)
@@ -99,7 +99,7 @@ namespace DatabaseMigrations.Services
             };
         }
 
-        public async Task<OrderDetail>? GetOrderDetailsWithChildAsync(int detailId)
+        public async Task<OrderDetail?> GetOrderDetailsWithChildAsync(int detailId)
         {
             var result = await _orderDetailRepository.GetOrderDetailAsync(detailId);
             if (result == null)

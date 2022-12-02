@@ -12,8 +12,8 @@ namespace DatabaseMigrations.Services.Abstractions
     {
         public Task<int> AddOrderDetailsAsync(OrderDetail detail);
         public Task<int> AddOrderDetailsAsync(float price, float discount, Order order, Product product);
-        public Task<OrderDetail>? GetOrderDetailsAsync(int detailId);
-        public Task<OrderDetail>? GetOrderDetailsWithChildAsync(int detailId);
+        public Task<OrderDetail?> GetOrderDetailsAsync(int detailId);
+        public Task<OrderDetail?> GetOrderDetailsWithChildAsync(int detailId);
         public Task UpdateDataAsync(int detailId, OrderDetail detail);
         public Task UpdateOrderIdAsync(int detailId, int orderId);
         public Task UpdateProductIdAsync(int detailId, int productId);

@@ -11,6 +11,6 @@ namespace DatabaseMigrations.Models
         public int Id { get; set; }
         public string? CompanyName { get; set; }
         public string? Phone { get; set; }
-        public Order Order { get; set; } = null!;
+        public IEnumerable<Order> Order { get; set; } = new List<Order>();
     }
 }

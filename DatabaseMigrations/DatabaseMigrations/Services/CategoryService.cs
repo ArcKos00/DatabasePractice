@@ -14,13 +14,13 @@ namespace DatabaseMigrations.Services
     public class CategoryService : BaseDataService<ApplicationDbContext>, ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
-        private readonly ILogger<Category> _logger;
+        private readonly ILogger<CategoryService> _logger;
 
         public CategoryService(
             IDbContextWrapper<ApplicationDbContext> dbContextWrapper,
             ILogger<BaseDataService<ApplicationDbContext>> logger,
             ICategoryRepository categoryRepository,
-            ILogger<Category> loggerService)
+            ILogger<CategoryService> loggerService)
             : base(dbContextWrapper, logger)
         {
             _categoryRepository = categoryRepository;
@@ -53,7 +53,7 @@ namespace DatabaseMigrations.Services
                         Id = s.Id,
                         ProductName = s.ProductName,
                         ProductDiscription = s.ProductDescription,
-                        SupplierId = s.Supplierid,
+                        SupplierId = s.SupplierId,
                         CategoryId = s.CategoryId,
                         UnitPrice = s.Price,
                         Discount = s.Discount,
@@ -65,7 +65,7 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task<Category> GetCategoryAsync(int categoryId)
+        public async Task<Category?> GetCategoryAsync(int categoryId)
         {
             var result = await _categoryRepository.GetCategoryAsync(categoryId);
             if (result == null)
@@ -84,7 +84,7 @@ namespace DatabaseMigrations.Services
             };
         }
 
-        public async Task<Category> GetCategoryByNameAsync(string categoryName)
+        public async Task<Category?> GetCategoryByNameAsync(string categoryName)
         {
             var result = await _categoryRepository.GetCategoryByNameAsync(categoryName);
             if (result == null)
@@ -103,7 +103,7 @@ namespace DatabaseMigrations.Services
             };
         }
 
-        public async Task<Category> GetCategoryWithChildAsync(int categoryId)
+        public async Task<Category?> GetCategoryWithChildAsync(int categoryId)
         {
             var result = await _categoryRepository.GetCategoryAsync(categoryId);
             if (result == null)
@@ -122,7 +122,7 @@ namespace DatabaseMigrations.Services
                 {
                     Id = s.Id,
                     CategoryId = s.CategoryId,
-                    Supplierid = s.SupplierId,
+                    SupplierId = s.SupplierId,
                     Available = s.ProductAvailable,
                     CurrentOrder = s.CurrentOrder,
                     Discount = s.Discount,
@@ -133,7 +133,7 @@ namespace DatabaseMigrations.Services
             };
         }
 
-        public async Task<Category> GetCategoryByNameWithChildAsync(string categoryName)
+        public async Task<Category?> GetCategoryByNameWithChildAsync(string categoryName)
         {
             var result = await _categoryRepository.GetCategoryByNameWithChildAsync(categoryName);
             if (result == null)
@@ -152,7 +152,7 @@ namespace DatabaseMigrations.Services
                 {
                     Id = s.Id,
                     CategoryId = s.CategoryId,
-                    Supplierid = s.SupplierId,
+                    SupplierId = s.SupplierId,
                     Available = s.ProductAvailable,
                     CurrentOrder = s.CurrentOrder,
                     Discount = s.Discount,
@@ -181,11 +181,11 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task UpdateCategoryNameAsync(int categoryId, string newName)
+        public async Task UpdateCategoryNameAsync(int categoryId, string name)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _categoryRepository.UpdateCategoryNameAsync(categoryId, newName);
+                var result = await _categoryRepository.UpdateCategoryNameAsync(categoryId, name);
                 if (!result)
                 {
                     _logger.LogError("Cannot update category");
@@ -217,14 +217,14 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task DeleteCategoryAsync(int id)
+        public async Task DeleteCategoryAsync(int categoryId)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _categoryRepository.DeleteCategoryAsync(id);
+                var result = await _categoryRepository.DeleteCategoryAsync(categoryId);
                 if (!result)
                 {
-                    _logger.LogError($"Failed to delete Category with id: {id}");
+                    _logger.LogError($"Failed to delete Category with id: {categoryId}");
                 }
             });
         }

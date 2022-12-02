@@ -15,16 +15,33 @@ namespace DatabaseMigrations.Services
     public class ProductService : BaseDataService<ApplicationDbContext>, IProductService
     {
         private readonly IProductRepository _productRepository;
-        private readonly ILogger<Product> _logger;
+        private readonly ILogger<ProductService> _logger;
         public ProductService(
             IProductRepository productRepository,
-            ILogger<Product> logger,
+            ILogger<ProductService> logger,
             ILogger<BaseDataService<ApplicationDbContext>> loggerService,
             IDbContextWrapper<ApplicationDbContext> wrapper)
         : base(wrapper, loggerService)
         {
             _productRepository = productRepository;
             _logger = logger;
+        }
+
+        public async Task<int> AddProductAsync(Product product)
+        {
+            return await ExecuteSafeAsync<int>(async () =>
+            {
+                return await _productRepository.AddProductAsync(new ProductEntity()
+                {
+                    SupplierId = product.SupplierId,
+                    CategoryId = product.CategoryId,
+                    Discount = product.Discount,
+                    ProductAvailable = product.Available,
+                    ProductDiscription = product.ProductDescription,
+                    ProductName = product.ProductName,
+                    UnitPrice = product.Price
+                });
+            });
         }
 
         public async Task<int> AddProductAsync(string name, string discription, Supplier supplier, Category category, float unitPrice, float discount, IEnumerable<OrderDetail> inOrders)
@@ -54,8 +71,8 @@ namespace DatabaseMigrations.Services
                     inOrders.Select(s => new OrderDetailEntity()
                     {
                         Id = s.Id,
-                        OrderId = s.Order!.Id,
-                        ProductId = s.ProductInOrder!.Id,
+                        OrderId = s.Order.Id,
+                        ProductId = s.ProductInOrder.Id,
                         OrderNumber = s.OrderNumber,
                         Price = s.Price,
                         Discount = s.Discount,
@@ -64,9 +81,29 @@ namespace DatabaseMigrations.Services
             });
         }
 
-        public async Task<Product?> GetProductAsync(int id)
+        public async Task<Product?> GetProductAsync(int productId)
         {
-            var result = await _productRepository.GetProductAsync(id);
+            var result = await _productRepository.GetProductAsync(productId);
+            if (result == null)
+            {
+                _logger.LogError($"Cannot found this Product");
+                return null!;
+            }
+
+            return new Product()
+            {
+                Id = result.Id,
+                ProductName = result.ProductName,
+                CategoryId = result.CategoryId,
+                Price = result.UnitPrice,
+                Discount = result.Discount,
+                Supplier = new Supplier()
+            };
+        }
+
+        public async Task<Product?> GetProductWithChild(int productId)
+        {
+            var result = await _productRepository.GetProductAsync(productId);
             if (result == null)
             {
                 _logger.LogError($"Cannot found this Product");
@@ -83,23 +120,23 @@ namespace DatabaseMigrations.Services
                 Supplier = new Supplier()
                 {
                     Id = result.SupplierId,
-                    CompanyName = result.Supplier!.CompanyName,
+                    CompanyName = result.Supplier.CompanyName,
                     Phone = result.Supplier.Phone
                 }
             };
         }
 
-        public async Task UpdateProductAsync(int id, Product newEntity)
+        public async Task UpdateDataAsync(int productId, Product newEntity)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _productRepository.UpdateProductDataAsync(id, new ProductEntity()
+                var result = await _productRepository.UpdateProductDataAsync(productId, new ProductEntity()
                 {
                     Id = newEntity.Id,
                     ProductName = newEntity.ProductName,
                     ProductDiscription = newEntity.ProductDescription,
-                    SupplierId = newEntity.Supplier!.Id,
-                    CategoryId = newEntity.Category!.Id,
+                    SupplierId = newEntity.SupplierId,
+                    CategoryId = newEntity.CategoryId,
                     UnitPrice = newEntity.Price,
                     Discount = newEntity.Discount,
                     ProductAvailable = newEntity.Available,
@@ -107,19 +144,115 @@ namespace DatabaseMigrations.Services
                 });
                 if (!result)
                 {
-                    _logger.LogError($"Cannot Update this product id:{id}");
+                    _logger.LogError($"Cannot Update this product id:{productId}");
                 }
             });
         }
 
-        public async Task DeleteProductAsync(int id)
+        public async Task UpdateNameAsync(int productId, string name)
         {
             await ExecuteSafeAsync(async () =>
             {
-                var result = await _productRepository.DeleteProductAsync(id);
+                var result = await _productRepository.UpdateProductNameAsync(productId, name);
                 if (!result)
                 {
-                    _logger.LogError($"Cannot Update this product id:{id}");
+                    _logger.LogError($"Cannot Update this product id:{productId}");
+                }
+            });
+        }
+
+        public async Task UpdateDiscriptionAsync(int productId, string discription)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _productRepository.UpdateProductDiscriptionAsync(productId, discription);
+                if (!result)
+                {
+                    _logger.LogError($"Cannot Update this product id:{productId}");
+                }
+            });
+        }
+
+        public async Task UpdateSupplierIdAsync(int productId, int supplierId)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _productRepository.UpdateProductSupplierIdAsync(productId, supplierId);
+                if (!result)
+                {
+                    _logger.LogError($"Cannot Update this product id:{productId}");
+                }
+            });
+        }
+
+        public async Task UpdateCategoryIdAsync(int productId, int categoryId)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _productRepository.UpdateProductCategoryIdAsync(productId, categoryId);
+                if (!result)
+                {
+                    _logger.LogError($"Cannot Update this product id:{productId}");
+                }
+            });
+        }
+
+        public async Task UpdatePriceAsync(int productId, float price)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _productRepository.UpdateProductPriceAsync(productId, price);
+                if (!result)
+                {
+                    _logger.LogError($"Cannot Update this product id:{productId}");
+                }
+            });
+        }
+
+        public async Task UpdateDiscountAsync(int productId, float discount)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _productRepository.UpdateProductDiscountAsync(productId, discount);
+                if (!result)
+                {
+                    _logger.LogError($"Cannot Update this product id:{productId}");
+                }
+            });
+        }
+
+        public async Task UpdateAvailableAsync(int productId, bool available)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _productRepository.UpdateProductAvailableAsync(productId, available);
+                if (!result)
+                {
+                    _logger.LogError($"Cannot Update this product id:{productId}");
+                }
+            });
+        }
+
+        public async Task UpdateOredrIdAsync(int productId, int orderId)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _productRepository.UpdateProductOrderIdAsync(productId, orderId);
+                if (!result)
+                {
+                    _logger.LogError($"Cannot Update this product id:{productId}");
+                }
+            });
+        }
+
+        public async Task DeleteProductAsync(int productId)
+        {
+            await ExecuteSafeAsync(async () =>
+            {
+                var result = await _productRepository.DeleteProductAsync(productId);
+                if (!result)
+                {
+                    _logger.LogError($"Cannot Update this product id:{productId}");
                 }
             });
         }

@@ -11,7 +11,7 @@ namespace DatabaseMigrations.Services.Abstractions
     {
         public Task<int> AddPaymentAsync(Payment payment);
         public Task<int> AddPaymentAsync(string payType, IEnumerable<Order> orders);
-        public Task<Payment>? GetPaymentAsync(int paymentId);
+        public Task<Payment?> GetPaymentAsync(int paymentId);
         public Task UpdatePaymentDataAsync(int paymentId, Payment payment);
         public Task UpdatePaymentTypeAsync(int paymentId, string paymentType);
         public Task UpdateAllowAsync(int paymentId, bool paymentAllow);

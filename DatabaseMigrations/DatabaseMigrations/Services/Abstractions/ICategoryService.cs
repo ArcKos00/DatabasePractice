@@ -11,10 +11,10 @@ namespace DatabaseMigrations.Services.Abstractions
     {
         public Task<int> AddCategotyAsync(Category category);
         public Task<int> AddCategotyAsync(string categoryName, string discription, IEnumerable<Product> products, bool isActive = false);
-        public Task<Category> GetCategoryAsync(int categoryId);
-        public Task<Category> GetCategoryByNameAsync(string categoryName);
-        public Task<Category> GetCategoryWithChildAsync(int categoryId);
-        public Task<Category> GetCategoryByNameWithChildAsync(string categoryName);
+        public Task<Category?> GetCategoryAsync(int categoryId);
+        public Task<Category?> GetCategoryByNameAsync(string categoryName);
+        public Task<Category?> GetCategoryWithChildAsync(int categoryId);
+        public Task<Category?> GetCategoryByNameWithChildAsync(string categoryName);
         public Task UpdateCategoryDateAsync(int categoryId, Category category);
         public Task UpdateCategoryNameAsync(int categoryId, string newName);
         public Task UpdateCategoryDiscriptionAsync(int categoryId, string discription);

@@ -12,7 +12,7 @@ namespace DatabaseMigrations.Models
         public string? ProductName { get; set; }
         public string? ProductDescription { get; set; }
         public int CategoryId { get; set; }
-        public int Supplierid { get; set; }
+        public int SupplierId { get; set; }
         public float Price { get; set; }
         public float Discount { get; set; }
         public bool Available { get; set; }

@@ -63,6 +63,11 @@ namespace DatabaseMigrations.Repositories
             return await _dbContext.Products.FirstOrDefaultAsync(f => f.Id == productId);
         }
 
+        public async Task<ProductEntity?> GetProductWithChildAsync(int productId)
+        {
+            return await _dbContext.Products.Include(i => i.Supplier).Include(i => i.Category).Include(i => i.Details).FirstOrDefaultAsync(f => f.Id == productId);
+        }
+
         public async Task<List<CategoryEntity>?> GetCategoryListAsync(ProductEntity newEntity)
         {
             return await _dbContext.Categories.Where(s => s.ProductsList.Contains(newEntity)).ToListAsync();
@@ -174,6 +179,20 @@ namespace DatabaseMigrations.Repositories
             }
 
             entity.ProductAvailable = available;
+            _dbContext.Entry(entity).CurrentValues.SetValues(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateProductOrderIdAsync(int entityId, int orderId)
+        {
+            var entity = await GetProductAsync(entityId);
+            if (entity == null)
+            {
+                return false;
+            }
+
+            entity.CurrentOrder = orderId;
             _dbContext.Entry(entity).CurrentValues.SetValues(entity);
             await _dbContext.SaveChangesAsync();
             return true;
